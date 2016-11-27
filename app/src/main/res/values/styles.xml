@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CountText">
+        <item name="android:layout_marginTop">@dimen/default_margin_top</item>
+        <item name="android:layout_marginBottom">@dimen/default_margin_bottom</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+
 </resources>

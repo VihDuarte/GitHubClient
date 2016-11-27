@@ -29,6 +29,9 @@ dependencies {
 
     compile "com.android.support:appcompat-v7:$support_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "com.android.support:recyclerview-v7:$support_version"
+    compile "com.android.support:design:$support_version"
+    compile "com.android.support:support-v4:$support_version"
 
     androidTestCompile("com.android.support.test.espresso:espresso-core:$espresso_version", {
         exclude group: 'com.android.support', module: 'support-annotations'
