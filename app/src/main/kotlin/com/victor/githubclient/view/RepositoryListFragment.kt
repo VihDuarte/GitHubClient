@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import com.victor.githubclient.R
-import com.victor.githubclient.interactor.ApiInteractor
 import com.victor.githubclient.model.Repository
 import com.victor.githubclient.presenter.RepositoryListPresenter
 
@@ -33,7 +32,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
 
         retainInstance = true
 
-        presenter = RepositoryListPresenter(this, ApiInteractor())
+        presenter = RepositoryListPresenter(this)
     }
 
     override fun onResume() {
@@ -58,7 +57,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         initRecyclerView()
 
         if (repositoryList == null || repositoryList!!.size == 0) {
-            presenter!!.getRepositories(context)
+            presenter!!.getRepositories(context, loaderManager)
         } else {
             repositoryListAdapter = RepositoryListAdapter(activity, repositoryList!!)
             repositoryListRecicler!!.adapter = repositoryListAdapter
@@ -76,7 +75,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager
                         .findLastCompletelyVisibleItemPosition() == layoutManager.itemCount - 1) {
-                    presenter!!.getRepositories(context)
+                    presenter!!.getRepositories(context, loaderManager)
                 }
             }
         })
@@ -105,7 +104,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
                 R.string.repository_list_get_error,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.retry,
-                        { view -> presenter!!.getRepositories(context) })
+                        { view -> presenter!!.getRepositories(context, loaderManager) })
 
         snackbar!!.show()
     }
