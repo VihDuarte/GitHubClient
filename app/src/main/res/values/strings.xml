@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Android sem vazilina</string>
     <string name="repository_list_get_error">Não foi possivel atualizar informações, verifique sua conexão!</string>
-    <string name="respository_list_title">Github KotlinPop</string>
+    <string name="respository_list_title">Github JavaPop</string>
 
     <string name="repository_detail_error">Não foi possivel recuperar dados do repositório, verifique sua conexão!</string>
     <string name="repository_detail_no_pull_request">Não houve nenhum pull request para esse repositório :(</string>

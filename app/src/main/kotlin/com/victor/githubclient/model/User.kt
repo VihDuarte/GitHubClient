@@ -1,12 +1,29 @@
 package com.victor.githubclient.model
 
+import org.json.JSONObject
+
 
 class User {
-    val id: Int? = null
 
-    val login: String? = null
+    constructor(json: JSONObject) {
+        if (json.has("id"))
+            id = json.getInt("id")
 
-    val avatarUrl: String? = null
+        if (json.has("login"))
+            login = json.getString("login")
 
-    val name: String? = null
+        if (json.has("avatar_url"))
+            avatarUrl = json.getString("avatar_url")
+
+        if (json.has("name"))
+            name = json.getString("name")
+    }
+
+    var id: Int? = null
+
+    var login: String? = null
+
+    var avatarUrl: String? = null
+
+    var name: String? = null
 }

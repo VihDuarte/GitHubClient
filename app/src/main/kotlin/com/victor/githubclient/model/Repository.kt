@@ -1,17 +1,42 @@
 package com.victor.githubclient.model
 
+import org.json.JSONObject
+
 class Repository {
-    val id: Int? = null
+    constructor(json: JSONObject) {
+        if (json.has("id"))
+            id = json.getInt("id")
 
-    val name: String? = null
+        if (json.has("name"))
+            name = json.getString("name")
 
-    val owner: User? = null
+        if (json.has("description"))
+            description = json.getString("description")
 
-    val description: String? = null
+        if (json.has("stargazers_count"))
+            stargazersCount = json.getInt("stargazers_count")
 
-    val stargazersCount: Int? = null
+        if (json.has("forks_count"))
+            forksCount = json.getInt("forks_count")
 
-    val forksCount: Int? = null
+        if (json.has("language"))
+            language = json.getString("language")
 
-    val language: String? = null
+        if (json.has("owner"))
+            owner = User(json.getJSONObject("owner"))
+    }
+
+    var id: Int? = null
+
+    var name: String? = null
+
+    var owner: User? = null
+
+    var description: String? = null
+
+    var stargazersCount: Int? = null
+
+    var forksCount: Int? = null
+
+    var language: String? = null
 }

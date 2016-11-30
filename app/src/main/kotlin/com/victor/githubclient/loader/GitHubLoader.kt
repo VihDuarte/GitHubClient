@@ -10,12 +10,10 @@ abstract class GitHubLoader<D>(context: Context) : AsyncTaskLoader<Response<D>>(
 
     override fun loadInBackground(): Response<D>? {
         try {
-
             val data = call()
             mCachedResponse = Response.ok(data)
 
         } catch (ex: Exception) {
-
             mCachedResponse = Response.error<D>(ex)
         }
 
@@ -23,16 +21,13 @@ abstract class GitHubLoader<D>(context: Context) : AsyncTaskLoader<Response<D>>(
     }
 
     override fun onStartLoading() {
-
         super.onStartLoading()
 
         if (mCachedResponse != null) {
-
             deliverResult(mCachedResponse)
         }
 
         if (takeContentChanged() || mCachedResponse == null) {
-
             forceLoad()
         }
     }

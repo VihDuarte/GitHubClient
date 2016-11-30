@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        style="@style/Base.TextAppearance.AppCompat.Title"
         android:text="Titulo" />
 
     <TextView
@@ -52,7 +53,7 @@
             android:id="@+id/txt_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            style="@style/Base.TextAppearance.AppCompat.Title"
             android:layout_marginLeft="@dimen/default_margin_left"
             android:layout_toEndOf="@+id/img_profile"
             android:layout_toRightOf="@+id/img_profile"

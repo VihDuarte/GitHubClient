@@ -22,6 +22,8 @@ public class GitHubLoaderManager {
                 } else {
                     callback.onSuccess(data.getResult());
                 }
+
+                manager.destroyLoader(loaderId);
             }
 
             @Override
