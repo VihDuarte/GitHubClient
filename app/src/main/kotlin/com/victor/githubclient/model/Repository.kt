@@ -1,8 +1,12 @@
 package com.victor.githubclient.model
 
+import android.content.ContentValues
+import android.database.sqlite.SQLiteDatabase
+import com.victor.githubclient.interactor.*
 import org.json.JSONObject
 
 class Repository {
+    constructor()
     constructor(json: JSONObject) {
         if (json.has("id"))
             id = json.getInt("id")
@@ -39,4 +43,27 @@ class Repository {
     var forksCount: Int? = null
 
     var language: String? = null
+
+    fun saveInDb(db: SQLiteDatabase, pagination: Int) {
+        owner?.saveInDb(db)
+
+        val cursor = db.rawQuery("SELECT $REPOSITORY_ID_FIELD " +
+                " FROM $REPOSITORY_TABLE_NAME" +
+                " WHERE $REPOSITORY_ID_FIELD = $id", null)
+
+        if (cursor.count == 0) {
+            val contentValues: ContentValues = ContentValues()
+
+            contentValues.put(REPOSITORY_NAME_FIELD, name)
+            contentValues.put(REPOSITORY_ID_FIELD, id)
+            contentValues.put(REPOSITORY_DESCRIPTION_FIELD, description)
+            contentValues.put(REPOSITORY_STARGAZERS_FIELD, stargazersCount)
+            contentValues.put(REPOSITORY_FORKS_FIELD, forksCount)
+            contentValues.put(REPOSITORY_LANGUAGE_FIELD, language)
+            contentValues.put(REPOSITORY_USER_ID_FIELD, owner?.id)
+            contentValues.put(REPOSITORY_PAGINATION_FIELD, pagination)
+
+            db.insert(REPOSITORY_TABLE_NAME, null, contentValues)
+        }
+    }
 }

@@ -1,10 +1,13 @@
 package com.victor.githubclient.model
 
+import android.content.ContentValues
+import android.database.sqlite.SQLiteDatabase
+import com.victor.githubclient.interactor.*
 import org.json.JSONObject
 
 
 class User {
-
+    constructor()
     constructor(json: JSONObject) {
         if (json.has("id"))
             id = json.getInt("id")
@@ -26,4 +29,21 @@ class User {
     var avatarUrl: String? = null
 
     var name: String? = null
+
+    fun saveInDb(db: SQLiteDatabase) {
+        val cursor = db.rawQuery("SELECT $USER_ID_FIELD " +
+                " FROM $USER_TABLE_NAME" +
+                " WHERE $USER_ID_FIELD = $id", null)
+
+        if (cursor.count == 0) {
+            val contentValues: ContentValues = ContentValues()
+
+            contentValues.put(USER_ID_FIELD, id)
+            contentValues.put(USER_LOGIN_FIELD, login)
+            contentValues.put(USER_AVATAR_FIELD, avatarUrl)
+            contentValues.put(USER_NAME_FIELD, name)
+
+            db.insert(USER_TABLE_NAME, null, contentValues)
+        }
+    }
 }

@@ -32,13 +32,19 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
 
         retainInstance = true
 
-        presenter = RepositoryListPresenter(this)
+        presenter = RepositoryListPresenter()
+        presenter?.attachView(context, this)
     }
 
     override fun onResume() {
         super.onResume()
         (activity as MainActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(false)
         (activity as MainActivity).supportActionBar!!.setTitle(R.string.respository_list_title)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter?.dettachView()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -57,7 +63,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         initRecyclerView()
 
         if (repositoryList == null || repositoryList!!.size == 0) {
-            presenter!!.getRepositories(context, loaderManager)
+            presenter!!.getRepositories(loaderManager)
         } else {
             repositoryListAdapter = RepositoryListAdapter(activity, repositoryList!!)
             repositoryListRecicler!!.adapter = repositoryListAdapter
@@ -75,7 +81,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager
                         .findLastCompletelyVisibleItemPosition() == layoutManager.itemCount - 1) {
-                    presenter!!.getRepositories(context, loaderManager)
+                    presenter!!.getRepositories(loaderManager)
                 }
             }
         })
@@ -104,7 +110,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
                 R.string.repository_list_get_error,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.retry,
-                        { view -> presenter!!.getRepositories(context, loaderManager) })
+                        { view -> presenter!!.getRepositories(loaderManager) })
 
         snackbar!!.show()
     }

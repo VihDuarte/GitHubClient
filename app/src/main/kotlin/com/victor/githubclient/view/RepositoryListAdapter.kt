@@ -9,11 +9,9 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.victor.githubclient.R
-import com.victor.githubclient.loader.GitHubLoaderManager
 import com.victor.githubclient.model.Repository
-import com.victor.githubclient.presenter.RepositoryListPresenter
 import com.victor.githubclient.utils.DownloadImageTask
-import com.victor.githubclient.utils.IntUtils
+import com.victor.githubclient.utils.formatCount
 
 class RepositoryListAdapter(private val activity: Activity, val items: List<Repository>) : RecyclerView.Adapter<RepositoryListAdapter.RepositoryListViewHolder>() {
 
@@ -41,8 +39,8 @@ class RepositoryListAdapter(private val activity: Activity, val items: List<Repo
         holder.txtUserName!!.text = item.owner?.login
         holder.txtTitle!!.text = item.name
         holder.txtDescription!!.text = item.description
-        holder.txtForkCount!!.text = IntUtils.formatCount(item.forksCount!!)
-        holder.txtStarCount!!.text = IntUtils.formatCount(item.stargazersCount!!)
+        holder.txtForkCount!!.text = formatCount(item.forksCount!!)
+        holder.txtStarCount!!.text = formatCount(item.stargazersCount!!)
         holder.imgProfile!!.setImageResource(R.drawable.avatar)
 
         DownloadImageTask(holder.imgProfile!!).execute(item.owner?.avatarUrl)
