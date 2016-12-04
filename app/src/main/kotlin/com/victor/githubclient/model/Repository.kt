@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import com.victor.githubclient.interactor.*
 import org.json.JSONObject
+import android.provider.SyncStateContract.Helpers.update
+
 
 class Repository {
     constructor()
@@ -51,19 +53,21 @@ class Repository {
                 " FROM $REPOSITORY_TABLE_NAME" +
                 " WHERE $REPOSITORY_ID_FIELD = $id", null)
 
+        val contentValues: ContentValues = ContentValues()
+
+        contentValues.put(REPOSITORY_NAME_FIELD, name)
+        contentValues.put(REPOSITORY_ID_FIELD, id)
+        contentValues.put(REPOSITORY_DESCRIPTION_FIELD, description)
+        contentValues.put(REPOSITORY_STARGAZERS_FIELD, stargazersCount)
+        contentValues.put(REPOSITORY_FORKS_FIELD, forksCount)
+        contentValues.put(REPOSITORY_LANGUAGE_FIELD, language)
+        contentValues.put(REPOSITORY_USER_ID_FIELD, owner?.id)
+        contentValues.put(REPOSITORY_PAGINATION_FIELD, pagination)
+
         if (cursor.count == 0) {
-            val contentValues: ContentValues = ContentValues()
-
-            contentValues.put(REPOSITORY_NAME_FIELD, name)
-            contentValues.put(REPOSITORY_ID_FIELD, id)
-            contentValues.put(REPOSITORY_DESCRIPTION_FIELD, description)
-            contentValues.put(REPOSITORY_STARGAZERS_FIELD, stargazersCount)
-            contentValues.put(REPOSITORY_FORKS_FIELD, forksCount)
-            contentValues.put(REPOSITORY_LANGUAGE_FIELD, language)
-            contentValues.put(REPOSITORY_USER_ID_FIELD, owner?.id)
-            contentValues.put(REPOSITORY_PAGINATION_FIELD, pagination)
-
             db.insert(REPOSITORY_TABLE_NAME, null, contentValues)
+        } else {
+            db.update(REPOSITORY_TABLE_NAME, contentValues, "$REPOSITORY_ID_FIELD = ?", arrayOf(id.toString()))
         }
     }
 }

@@ -11,13 +11,9 @@ class RepositoriesSearchResult {
             Repository(items.getJSONObject(it))
         }
     }
-
-    var offline: Boolean = false
-
     var pagination: Int = 0
 
     val repositories: MutableList<Repository> = arrayListOf()
-
 
     fun saveInDb(db: SQLiteDatabase) {
         repositories.forEach { it.saveInDb(db, pagination) }

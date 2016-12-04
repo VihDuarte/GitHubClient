@@ -4,7 +4,6 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-
 class GitHubData(context: Context) : SQLiteOpenHelper(context, GitHubData.DB_NAME, null, GitHubData.VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE $USER_TABLE_NAME ($USER_ID_FIELD INTEGER PRIMARY KEY," +

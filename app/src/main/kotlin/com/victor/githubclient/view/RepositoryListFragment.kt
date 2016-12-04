@@ -65,7 +65,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         if (repositoryList == null || repositoryList!!.size == 0) {
             presenter!!.getRepositories(loaderManager)
         } else {
-            repositoryListAdapter = RepositoryListAdapter(activity, repositoryList!!)
+            repositoryListAdapter = RepositoryListAdapter(repositoryList!!)
             repositoryListRecicler!!.adapter = repositoryListAdapter
         }
     }
@@ -90,7 +90,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
     override fun showItems(items: MutableList<Repository>) {
         if (repositoryListAdapter == null) {
             repositoryList = items
-            repositoryListAdapter = RepositoryListAdapter(activity, items)
+            repositoryListAdapter = RepositoryListAdapter(items)
             repositoryListRecicler!!.adapter = repositoryListAdapter
         } else {
             repositoryList!!.addAll(items)

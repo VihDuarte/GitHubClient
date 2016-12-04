@@ -2,7 +2,6 @@ package com.victor.githubclient.interactor
 
 import android.database.sqlite.SQLiteDatabase
 import com.victor.githubclient.BuildConfig
-import com.victor.githubclient.model.PullRequest
 import com.victor.githubclient.model.RepositoriesSearchResult
 import com.victor.githubclient.model.Repository
 import com.victor.githubclient.model.User
@@ -22,8 +21,6 @@ fun searchRepositories(db: SQLiteDatabase, filter: String = "language:java", sor
 
 fun getOfflineRepositories(db: SQLiteDatabase, pagination: Int): RepositoriesSearchResult? {
     val result: RepositoriesSearchResult = RepositoriesSearchResult()
-
-    result.offline = true
     result.pagination = pagination
 
     val repositoryCursor = db.rawQuery("SELECT " +
@@ -74,12 +71,4 @@ fun getOfflineRepositories(db: SQLiteDatabase, pagination: Int): RepositoriesSea
     }
 
     return result
-}
-
-fun getOffilinePullRequests(creator: String, repository: String): MutableList<PullRequest>? {
-    return null
-}
-
-fun getAllPullRequests(creator: String, repository: String): MutableList<PullRequest>? {
-    return null
 }

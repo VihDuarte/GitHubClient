@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase
 import com.victor.githubclient.interactor.*
 import org.json.JSONObject
 
-
 class User {
     constructor()
     constructor(json: JSONObject) {
@@ -35,15 +34,17 @@ class User {
                 " FROM $USER_TABLE_NAME" +
                 " WHERE $USER_ID_FIELD = $id", null)
 
+        val contentValues: ContentValues = ContentValues()
+
+        contentValues.put(USER_ID_FIELD, id)
+        contentValues.put(USER_LOGIN_FIELD, login)
+        contentValues.put(USER_AVATAR_FIELD, avatarUrl)
+        contentValues.put(USER_NAME_FIELD, name)
+
         if (cursor.count == 0) {
-            val contentValues: ContentValues = ContentValues()
-
-            contentValues.put(USER_ID_FIELD, id)
-            contentValues.put(USER_LOGIN_FIELD, login)
-            contentValues.put(USER_AVATAR_FIELD, avatarUrl)
-            contentValues.put(USER_NAME_FIELD, name)
-
             db.insert(USER_TABLE_NAME, null, contentValues)
+        } else {
+            db.update(USER_TABLE_NAME, contentValues, "$USER_ID_FIELD = ?", arrayOf(id.toString()))
         }
     }
 }

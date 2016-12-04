@@ -17,7 +17,7 @@ import com.victor.githubclient.utils.isOnline
 /**
  * Created by Victor on 25/08/2016.
  */
-class RepositoryListPresenter : Callback<RepositoriesSearchResult?> {
+class RepositoryListPresenter {
     private var firstTime = true
     private var currentTimelinePage = 0
     private var view: RepositoryListView? = null
@@ -25,18 +25,53 @@ class RepositoryListPresenter : Callback<RepositoriesSearchResult?> {
     private var context: Context? = null
 
     fun getRepositories(loaderManager: LoaderManager) {
-        if(view == null || context == null)
+        if (view == null || context == null)
             throw Exception("attach view to use the presenter")
 
         view?.showProgress()
 
         if (firstTime || !isOnline(context!!)) {
-            val loaderOffiline = RepositoryListLoaderOffline(context!!, currentTimelinePage + 1, githubData!!.readableDatabase)
-            GitHubLoaderManager.init(loaderManager, -(currentTimelinePage + 1), loaderOffiline, this)
+            val loaderOffline = RepositoryListLoaderOffline(context!!, currentTimelinePage + 1, githubData!!.readableDatabase)
+            GitHubLoaderManager.init(loaderManager, -(currentTimelinePage + 1), loaderOffline, (object : Callback<RepositoriesSearchResult?> {
+                override fun onFailure(ex: Exception) {
+                    //do nothing
+                }
+
+                override fun onSuccess(result: RepositoriesSearchResult?) {
+                    if (result != null) {
+                        currentTimelinePage = result.pagination
+                        view?.showItems(result.repositories)
+                    }
+                }
+            }))
         }
 
         val loader = RepositoryListLoader(context!!, currentTimelinePage + 1, githubData!!.writableDatabase)
-        GitHubLoaderManager.init(loaderManager, currentTimelinePage + 1, loader, this)
+        GitHubLoaderManager.init(loaderManager, currentTimelinePage + 1, loader, (object : Callback<RepositoriesSearchResult?> {
+            override fun onFailure(ex: Exception) {
+                view?.hideProgress()
+                view?.showError()
+            }
+
+            override fun onSuccess(result: RepositoriesSearchResult?) {
+                if (result != null) {
+                    currentTimelinePage = result.pagination
+
+                    if (firstTime ) {
+                        view?.cleanData()
+                        firstTime = false
+                    }
+
+                    view?.showItems(result.repositories)
+                    view?.hideError()
+                    view?.hideProgress()
+                }else{
+                    view?.hideProgress()
+                    view?.showError()
+                }
+            }
+        }))
+
     }
 
     fun attachView(context: Context, view: RepositoryListView) {
@@ -48,28 +83,6 @@ class RepositoryListPresenter : Callback<RepositoriesSearchResult?> {
     fun dettachView() {
         this.view = null
         githubData?.close()
-    }
-
-    override fun onFailure(ex: Exception) {
-        view?.hideProgress()
-        view?.showError()
-    }
-
-    override fun onSuccess(result: RepositoriesSearchResult?) {
-        view?.hideProgress()
-
-        if (result != null) {
-            currentTimelinePage = result.pagination
-
-            if (firstTime && result.offline) {
-                view?.cleanData()
-                firstTime = false
-            }
-
-            view?.showItems(result.repositories)
-            view?.hideError()
-        } else
-            view?.showError()
     }
 
     class RepositoryListLoader(context: Context, private val currentPage: Int, private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<RepositoriesSearchResult?>(context) {
