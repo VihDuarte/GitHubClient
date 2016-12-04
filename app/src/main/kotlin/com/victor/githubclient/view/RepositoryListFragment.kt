@@ -17,15 +17,15 @@ import com.victor.githubclient.presenter.RepositoryListPresenter
  * A simple [Fragment] subclass.
  */
 class RepositoryListFragment : Fragment(), RepositoryListView {
-    internal var repositoryListRecicler: RecyclerView? = null
+    private var repositoryListRecicler: RecyclerView? = null
 
-    internal var progressBar: ProgressBar? = null
+    private var progressBar: ProgressBar? = null
 
-    protected var repositoryList: MutableList<Repository>? = null
+    private var repositoryList: MutableList<Repository>? = null
     private var repositoryListAdapter: RepositoryListAdapter? = null
-    internal var snackbar: Snackbar? = null
+    private var snackbar: Snackbar? = null
 
-    var presenter: RepositoryListPresenter? = null
+    private var presenter: RepositoryListPresenter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +65,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         if (repositoryList == null || repositoryList!!.size == 0) {
             presenter!!.getRepositories(loaderManager)
         } else {
-            repositoryListAdapter = RepositoryListAdapter(repositoryList!!)
+            repositoryListAdapter = RepositoryListAdapter(activity, repositoryList!!)
             repositoryListRecicler!!.adapter = repositoryListAdapter
         }
     }
@@ -90,7 +90,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
     override fun showItems(items: MutableList<Repository>) {
         if (repositoryListAdapter == null) {
             repositoryList = items
-            repositoryListAdapter = RepositoryListAdapter(items)
+            repositoryListAdapter = RepositoryListAdapter(activity, items)
             repositoryListRecicler!!.adapter = repositoryListAdapter
         } else {
             repositoryList!!.addAll(items)

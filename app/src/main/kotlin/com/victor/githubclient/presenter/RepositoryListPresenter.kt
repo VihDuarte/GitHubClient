@@ -71,7 +71,6 @@ class RepositoryListPresenter {
                 }
             }
         }))
-
     }
 
     fun attachView(context: Context, view: RepositoryListView) {

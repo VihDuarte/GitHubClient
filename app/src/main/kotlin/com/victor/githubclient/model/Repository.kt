@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 import com.victor.githubclient.interactor.*
 import org.json.JSONObject
-import android.provider.SyncStateContract.Helpers.update
 
 
 class Repository {
@@ -34,17 +33,17 @@ class Repository {
 
     var id: Int? = null
 
-    var name: String? = null
+    var name: String = ""
 
     var owner: User? = null
 
-    var description: String? = null
+    var description: String = ""
 
     var stargazersCount: Int? = null
 
     var forksCount: Int? = null
 
-    var language: String? = null
+    var language: String = ""
 
     fun saveInDb(db: SQLiteDatabase, pagination: Int) {
         owner?.saveInDb(db)

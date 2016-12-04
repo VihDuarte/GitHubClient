@@ -20,6 +20,17 @@ class GitHubData(context: Context) : SQLiteOpenHelper(context, GitHubData.DB_NAM
                 "$REPOSITORY_USER_ID_FIELD INTEGER," +
                 "$REPOSITORY_PAGINATION_FIELD INTEGER," +
                 "FOREIGN KEY($REPOSITORY_USER_ID_FIELD) REFERENCES $USER_TABLE_NAME($USER_ID_FIELD));")
+
+        db.execSQL("CREATE TABLE $PULL_REQUEST_TABLE_NAME ($PULL_REQUEST_ID_FIELD INTEGER PRIMARY KEY," +
+                "$PULL_REQUEST_CREATOR_FIELD TEXT," +
+                "$PULL_REQUEST_REPOSITORY_FIELD TEXT," +
+                "$PULL_REQUEST_TITLE_FIELD TEXT," +
+                "$PULL_REQUEST_BODY_FIELD TEXT," +
+                "$PULL_REQUEST_CREATED_FIELD DATE," +
+                "$PULL_REQUEST_HTML_URL_FIELD TEXT," +
+                "$PULL_REQUEST_USER_ID_FIELD INTEGER," +
+                "$PULL_REQUEST_ORDER_FIELD INTEGER," +
+                "FOREIGN KEY($PULL_REQUEST_USER_ID_FIELD) REFERENCES $USER_TABLE_NAME($USER_ID_FIELD));")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int,
@@ -47,4 +58,15 @@ val REPOSITORY_LANGUAGE_FIELD = "language"
 val REPOSITORY_PAGINATION_FIELD = "pagination"
 val REPOSITORY_USER_ID_FIELD = "user_id"
 val REPOSITORY_ID_FIELD = "_id"
+
+val PULL_REQUEST_TABLE_NAME = "PullResquest"
+val PULL_REQUEST_CREATOR_FIELD = "creator"
+val PULL_REQUEST_REPOSITORY_FIELD = "repository"
+val PULL_REQUEST_TITLE_FIELD = "title"
+val PULL_REQUEST_BODY_FIELD = "body"
+val PULL_REQUEST_CREATED_FIELD = "createdAt"
+val PULL_REQUEST_HTML_URL_FIELD = "htmlUrl"
+val PULL_REQUEST_USER_ID_FIELD = "user_id"
+val PULL_REQUEST_ORDER_FIELD = "order_view"
+val PULL_REQUEST_ID_FIELD = "_id"
 

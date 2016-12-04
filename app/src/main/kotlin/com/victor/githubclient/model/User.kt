@@ -23,11 +23,11 @@ class User {
 
     var id: Int? = null
 
-    var login: String? = null
+    var login: String = ""
 
-    var avatarUrl: String? = null
+    var avatarUrl: String = ""
 
-    var name: String? = null
+    var name: String = ""
 
     fun saveInDb(db: SQLiteDatabase) {
         val cursor = db.rawQuery("SELECT $USER_ID_FIELD " +
