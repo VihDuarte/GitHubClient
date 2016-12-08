@@ -12,7 +12,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.victor.githubclient.R
 import com.victor.githubclient.model.PullRequest
-import com.victor.githubclient.utils.DownloadImageTask
+import com.victor.githubclient.utils.ImageLoader
 
 
 class RepositoryPullsRequestAdapter(private val context: Context, private val items: List<PullRequest>) : RecyclerView.Adapter<RepositoryPullsRequestAdapter.RepositoryPullsRequestViewHolder>() {
@@ -38,7 +38,7 @@ class RepositoryPullsRequestAdapter(private val context: Context, private val it
         holder.txtBody!!.text = item.body
         holder.txtDate!!.text = item.createdAtFormated
 
-        DownloadImageTask(holder.imgProfile!!).execute(item.user?.avatarUrl)
+        ImageLoader.loadImage(item.user?.avatarUrl, holder.imgProfile!!, R.drawable.avatar)
 
         holder.layoutParent!!.setOnClickListener { view ->
             context.startActivity(

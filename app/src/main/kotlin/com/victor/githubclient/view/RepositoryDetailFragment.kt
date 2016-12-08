@@ -55,7 +55,7 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter?.dettachView()
+        presenter?.detachView()
     }
 
     override fun onPause() {

@@ -1,6 +1,7 @@
 package com.victor.githubclient.view
 
 import android.app.Activity
+import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.victor.githubclient.R
 import com.victor.githubclient.model.Repository
-import com.victor.githubclient.utils.DownloadImageTask
+import com.victor.githubclient.utils.ImageLoader
 import com.victor.githubclient.utils.formatCount
 
 class RepositoryListAdapter(private val activity: Activity, val items: List<Repository>) : RecyclerView.Adapter<RepositoryListAdapter.RepositoryListViewHolder>() {
@@ -37,9 +38,8 @@ class RepositoryListAdapter(private val activity: Activity, val items: List<Repo
         holder.txtDescription!!.text = item.description
         holder.txtForkCount!!.text = formatCount(item.forksCount!!)
         holder.txtStarCount!!.text = formatCount(item.stargazersCount!!)
-        holder.imgProfile!!.setImageResource(R.drawable.avatar)
 
-        DownloadImageTask(holder.imgProfile!!).execute(item.owner?.avatarUrl)
+        ImageLoader.loadImage(item.owner?.avatarUrl, holder.imgProfile!!, R.drawable.avatar)
 
         holder.layoutParent!!.setOnClickListener { view ->
             (activity as MainActivity).showDetail(
@@ -48,7 +48,6 @@ class RepositoryListAdapter(private val activity: Activity, val items: List<Repo
                             item.name))
         }
     }
-
 
     inner class RepositoryListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var txtUserName: TextView? = null

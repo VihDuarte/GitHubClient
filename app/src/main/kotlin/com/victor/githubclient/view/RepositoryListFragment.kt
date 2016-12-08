@@ -44,7 +44,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter?.dettachView()
+        presenter?.detachView()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,

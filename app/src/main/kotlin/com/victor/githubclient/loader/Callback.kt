@@ -1,6 +1,6 @@
 package com.victor.githubclient.loader
 
-interface Callback<T> {
+interface Callback<in T> {
 
     fun onFailure(ex: Exception)
 

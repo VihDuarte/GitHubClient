@@ -79,7 +79,7 @@ class RepositoryListPresenter {
         githubData = GitHubData(context)
     }
 
-    fun dettachView() {
+    fun detachView() {
         this.view = null
         githubData?.close()
     }
