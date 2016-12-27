@@ -12,6 +12,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.victor.githubclient.R
 import com.victor.githubclient.model.PullRequest
+import com.victor.githubclient.model.getCreatedAtFormated
 import com.victor.githubclient.utils.ImageLoader
 
 
@@ -36,7 +37,7 @@ class RepositoryPullsRequestAdapter(private val context: Context, private val it
         holder.txtUserName?.text = item.user?.login
         holder.txtTitle?.text = item.title
         holder.txtBody?.text = item.body
-        holder.txtDate?.text = item.createdAtFormated
+        holder.txtDate?.text = getCreatedAtFormated(item.createdAt)
 
         if (holder.imgProfile != null)
             ImageLoader.loadImage(item.user?.avatarUrl, holder.imgProfile!!, R.drawable.avatar)

@@ -2,10 +2,7 @@ package com.victor.githubclient.interactor
 
 import android.database.sqlite.SQLiteDatabase
 import com.victor.githubclient.BuildConfig
-import com.victor.githubclient.model.PullRequest
-import com.victor.githubclient.model.RepositoriesSearchResult
-import com.victor.githubclient.model.Repository
-import com.victor.githubclient.model.User
+import com.victor.githubclient.model.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.URL
@@ -16,16 +13,16 @@ fun searchRepositories(db: SQLiteDatabase, filter: String = "language:java", sor
     val url = BuildConfig.URLBASE + "search/repositories?q=$filter&sort=$sort&page=$pagination"
     val json = URL(url).readText()
 
-    val result = RepositoriesSearchResult(JSONObject(json))
+    val result = getRepositoriesSearchByJson(JSONObject(json))
     result.pagination = pagination
 
-    result.saveInDb(db)
+    saveRepositoriesSearchInDb(db, result)
     return result
 }
 
 fun getOfflineRepositories(db: SQLiteDatabase, pagination: Int): RepositoriesSearchResult? {
-    val result: RepositoriesSearchResult = RepositoriesSearchResult()
-    result.pagination = pagination
+
+    val repositories: MutableList<Repository> = arrayListOf()
 
     val repositoryCursor = db.rawQuery("SELECT " +
             "$REPOSITORY_NAME_FIELD, " +
@@ -41,13 +38,6 @@ fun getOfflineRepositories(db: SQLiteDatabase, pagination: Int): RepositoriesSea
     repositoryCursor.moveToFirst()
 
     loop@ for (i in 0..repositoryCursor.count - 1) {
-        val item: Repository = Repository()
-        item.name = repositoryCursor.getString(0)
-        item.description = repositoryCursor.getString(1)
-        item.stargazersCount = repositoryCursor.getInt(2)
-        item.forksCount = repositoryCursor.getInt(3)
-        item.language = repositoryCursor.getString(4)
-        item.id = repositoryCursor.getInt(6)
 
         val userId = repositoryCursor.getInt(5)
 
@@ -61,18 +51,25 @@ fun getOfflineRepositories(db: SQLiteDatabase, pagination: Int): RepositoriesSea
 
         userCursor.moveToFirst()
 
-        var user: User = User()
-        user.login = userCursor.getString(0)
-        user.avatarUrl = userCursor.getString(1)
-        user.name = userCursor.getString(2)
-        user.id = userCursor.getInt(3)
+        var user = User(userCursor.getInt(3),
+                userCursor.getString(0),
+                userCursor.getString(1),
+                userCursor.getString(2))
 
-        item.owner = user
+        val item: Repository = Repository(repositoryCursor.getInt(6),
+                repositoryCursor.getString(0),
+                user,
+                repositoryCursor.getString(1),
+                repositoryCursor.getInt(2),
+                repositoryCursor.getInt(3),
+                repositoryCursor.getString(4))
 
-        result.repositories.add(item)
+        repositories.add(item)
 
         repositoryCursor.moveToNext()
     }
+
+    val result: RepositoriesSearchResult = RepositoriesSearchResult(pagination, repositories)
 
     return result
 }
@@ -86,14 +83,15 @@ fun getAllPullRequests(db: SQLiteDatabase, creator: String, repository: String):
     val result: MutableList<PullRequest> = arrayListOf()
 
     loop@ for (i in 0..allPullRequest.length() - 1) {
-        val item = PullRequest(allPullRequest.getJSONObject(i))
+        var jsonObject = allPullRequest.getJSONObject(i)
+        jsonObject.put("creator", creator)
+        jsonObject.put("repository", repository)
+        jsonObject.put("order", i)
 
-        item.creator = creator
-        item.repository = repository
-        item.order = i
+        val item = getPullRequestByJson(jsonObject)
 
         result.add(item)
-        item.saveInDb(db)
+        savePullRequestInDb(db, item)
     }
 
     return result
@@ -119,15 +117,6 @@ fun getOffilinePullRequests(db: SQLiteDatabase, creator: String, repository: Str
 
     val result: MutableList<PullRequest> = arrayListOf()
     loop@ for (i in 0..pullRequestCursor.count - 1) {
-        var item = PullRequest()
-
-        item.creator = pullRequestCursor.getString(0)
-        item.repository = pullRequestCursor.getString(1)
-        item.title = pullRequestCursor.getString(2)
-        item.body = pullRequestCursor.getString(3)
-        item.createdAt = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(pullRequestCursor.getString(4))
-        item.htmlUrl = pullRequestCursor.getString(5)
-        item.id = pullRequestCursor.getInt(8)
 
         val userId = pullRequestCursor.getInt(6)
 
@@ -141,13 +130,20 @@ fun getOffilinePullRequests(db: SQLiteDatabase, creator: String, repository: Str
 
         userCursor.moveToFirst()
 
-        var user: User = User()
-        user.login = userCursor.getString(0)
-        user.avatarUrl = userCursor.getString(1)
-        user.name = userCursor.getString(2)
-        user.id = userCursor.getInt(3)
+        var user = User(userCursor.getInt(3),
+                userCursor.getString(0),
+                userCursor.getString(1),
+                userCursor.getString(2))
 
-        item.user = user
+        var item = PullRequest(pullRequestCursor.getInt(8),
+                pullRequestCursor.getString(0),
+                pullRequestCursor.getString(1),
+                user,
+                pullRequestCursor.getString(2),
+                pullRequestCursor.getString(3),
+                SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(pullRequestCursor.getString(4)),
+                pullRequestCursor.getString(5),
+                pullRequestCursor.getInt(7))
 
         result.add(item)
 

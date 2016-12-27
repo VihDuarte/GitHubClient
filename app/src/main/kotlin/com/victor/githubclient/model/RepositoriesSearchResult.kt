@@ -1,22 +1,18 @@
 package com.victor.githubclient.model
 
-import android.database.sqlite.SQLiteDatabase
 import org.json.JSONObject
 
-class RepositoriesSearchResult {
-    constructor()
-    constructor(json: JSONObject) {
-        var items = json.getJSONArray("items")
-        (0..(items.length() - 1)).mapTo(repositories) {
-            Repository(items.getJSONObject(it))
-        }
-    }
-    var pagination: Int = 0
+data class RepositoriesSearchResult(var pagination: Int, val repositories: MutableList<Repository>)
 
+fun getRepositoriesSearchByJson(json: JSONObject): RepositoriesSearchResult {
     val repositories: MutableList<Repository> = arrayListOf()
 
-    fun saveInDb(db: SQLiteDatabase) {
-        repositories.forEach { it.saveInDb(db, pagination) }
+    var items = json.getJSONArray("items")
+    (0..(items.length() - 1)).mapTo(repositories) {
+        getRepositoryByJson(items.getJSONObject(it))
     }
+
+    return RepositoriesSearchResult(0, repositories);
 }
+
 

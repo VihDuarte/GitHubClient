@@ -1,8 +1,10 @@
 package com.victor.githubclient.interactor
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.victor.githubclient.model.*
 
 class GitHubData(context: Context) : SQLiteOpenHelper(context, GitHubData.DB_NAME, null, GitHubData.VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
@@ -41,6 +43,89 @@ class GitHubData(context: Context) : SQLiteOpenHelper(context, GitHubData.DB_NAM
         private val DB_NAME = "GitHubClient"
         private val VERSION = 1
     }
+}
+
+fun saveUserInDb(db: SQLiteDatabase, user: User) {
+    var userId = user.id
+
+    val cursor = db.rawQuery("SELECT $USER_ID_FIELD " +
+            " FROM $USER_TABLE_NAME" +
+            " WHERE $USER_ID_FIELD = $userId", null)
+
+    val contentValues: ContentValues = ContentValues()
+
+    contentValues.put(USER_ID_FIELD, user.id)
+    contentValues.put(USER_LOGIN_FIELD, user.login)
+    contentValues.put(USER_AVATAR_FIELD, user.avatarUrl)
+    contentValues.put(USER_NAME_FIELD, user.name)
+
+    if (cursor.count == 0) {
+        db.insert(USER_TABLE_NAME, null, contentValues)
+    } else {
+        db.update(USER_TABLE_NAME, contentValues, "$USER_ID_FIELD = ?", arrayOf(user.id.toString()))
+    }
+}
+
+fun savePullRequestInDb(db: SQLiteDatabase, pullRequest: PullRequest) {
+    if (pullRequest.user != null)
+        saveUserInDb(db, pullRequest.user!!)
+
+    var pullRequestId = pullRequest.id
+
+    val cursor = db.rawQuery("SELECT $PULL_REQUEST_ID_FIELD " +
+            " FROM $PULL_REQUEST_TABLE_NAME" +
+            " WHERE $PULL_REQUEST_ID_FIELD = $pullRequestId", null)
+
+    val contentValues: ContentValues = ContentValues()
+
+    contentValues.put(PULL_REQUEST_ID_FIELD, pullRequest.id)
+    contentValues.put(PULL_REQUEST_CREATOR_FIELD, pullRequest.creator)
+    contentValues.put(PULL_REQUEST_REPOSITORY_FIELD, pullRequest.repository)
+    contentValues.put(PULL_REQUEST_TITLE_FIELD, pullRequest.title)
+    contentValues.put(PULL_REQUEST_BODY_FIELD, pullRequest.body)
+    contentValues.put(PULL_REQUEST_HTML_URL_FIELD, pullRequest.htmlUrl)
+    contentValues.put(PULL_REQUEST_CREATED_FIELD, getCreatedAtFormated(pullRequest.createdAt))
+    contentValues.put(PULL_REQUEST_ORDER_FIELD, pullRequest.order)
+    contentValues.put(PULL_REQUEST_USER_ID_FIELD, pullRequest.user?.id)
+
+    if (cursor.count == 0) {
+        db.insert(PULL_REQUEST_TABLE_NAME, null, contentValues)
+    } else {
+        db.update(PULL_REQUEST_TABLE_NAME, contentValues, "$PULL_REQUEST_ID_FIELD = ?", arrayOf(pullRequest.id.toString()))
+    }
+}
+
+fun saveRepositoryInDb(db: SQLiteDatabase, pagination: Int, repository: Repository) {
+    if (repository.owner != null) {
+        saveUserInDb(db, repository.owner!!)
+    }
+
+    var repositorytId = repository.id
+
+    val cursor = db.rawQuery("SELECT $REPOSITORY_ID_FIELD " +
+            " FROM $REPOSITORY_TABLE_NAME" +
+            " WHERE $REPOSITORY_ID_FIELD = $repositorytId", null)
+
+    val contentValues: ContentValues = ContentValues()
+
+    contentValues.put(REPOSITORY_NAME_FIELD, repository.name)
+    contentValues.put(REPOSITORY_ID_FIELD, repository.id)
+    contentValues.put(REPOSITORY_DESCRIPTION_FIELD, repository.description)
+    contentValues.put(REPOSITORY_STARGAZERS_FIELD, repository.stargazersCount)
+    contentValues.put(REPOSITORY_FORKS_FIELD, repository.forksCount)
+    contentValues.put(REPOSITORY_LANGUAGE_FIELD, repository.language)
+    contentValues.put(REPOSITORY_USER_ID_FIELD, repository.owner?.id)
+    contentValues.put(REPOSITORY_PAGINATION_FIELD, pagination)
+
+    if (cursor.count == 0) {
+        db.insert(REPOSITORY_TABLE_NAME, null, contentValues)
+    } else {
+        db.update(REPOSITORY_TABLE_NAME, contentValues, "$REPOSITORY_ID_FIELD = ?", arrayOf(repository.id.toString()))
+    }
+}
+
+fun saveRepositoriesSearchInDb(db: SQLiteDatabase, repositoriesSearchResult: RepositoriesSearchResult) {
+    repositoriesSearchResult.repositories.forEach { saveRepositoryInDb(db, repositoriesSearchResult.pagination, it) }
 }
 
 val USER_TABLE_NAME = "User"

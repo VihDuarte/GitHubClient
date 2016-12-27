@@ -1,72 +1,47 @@
 package com.victor.githubclient.model
 
-import android.content.ContentValues
-import android.database.sqlite.SQLiteDatabase
-import com.victor.githubclient.interactor.*
 import org.json.JSONObject
 
 
-class Repository {
-    constructor()
-    constructor(json: JSONObject) {
-        if (json.has("id"))
-            id = json.getInt("id")
+data class Repository(var id: Int?,
+                      var name: String,
+                      var owner: User?,
+                      var description: String,
+                      var stargazersCount: Int?,
+                      var forksCount: Int?,
+                      var language: String)
 
-        if (json.has("name"))
-            name = json.getString("name")
-
-        if (json.has("description"))
-            description = json.getString("description")
-
-        if (json.has("stargazers_count"))
-            stargazersCount = json.getInt("stargazers_count")
-
-        if (json.has("forks_count"))
-            forksCount = json.getInt("forks_count")
-
-        if (json.has("language"))
-            language = json.getString("language")
-
-        if (json.has("owner"))
-            owner = User(json.getJSONObject("owner"))
-    }
-
+fun getRepositoryByJson(json: JSONObject): Repository {
     var id: Int? = null
-
-    var name: String = ""
-
+    var name = ""
+    var description = ""
+    var stargazersCount: Int? = null
+    var forksCount: Int? = null
+    var language = ""
     var owner: User? = null
 
-    var description: String = ""
+    if (json.has("id"))
+        id = json.getInt("id")
 
-    var stargazersCount: Int? = null
+    if (json.has("name"))
+        name = json.getString("name")
 
-    var forksCount: Int? = null
+    if (json.has("description"))
+        description = json.getString("description")
 
-    var language: String = ""
+    if (json.has("stargazers_count"))
+        stargazersCount = json.getInt("stargazers_count")
 
-    fun saveInDb(db: SQLiteDatabase, pagination: Int) {
-        owner?.saveInDb(db)
+    if (json.has("forks_count"))
+        forksCount = json.getInt("forks_count")
 
-        val cursor = db.rawQuery("SELECT $REPOSITORY_ID_FIELD " +
-                " FROM $REPOSITORY_TABLE_NAME" +
-                " WHERE $REPOSITORY_ID_FIELD = $id", null)
+    if (json.has("language"))
+        language = json.getString("language")
 
-        val contentValues: ContentValues = ContentValues()
+    if (json.has("owner"))
+        owner = getUserByJson(json.getJSONObject("owner"))
 
-        contentValues.put(REPOSITORY_NAME_FIELD, name)
-        contentValues.put(REPOSITORY_ID_FIELD, id)
-        contentValues.put(REPOSITORY_DESCRIPTION_FIELD, description)
-        contentValues.put(REPOSITORY_STARGAZERS_FIELD, stargazersCount)
-        contentValues.put(REPOSITORY_FORKS_FIELD, forksCount)
-        contentValues.put(REPOSITORY_LANGUAGE_FIELD, language)
-        contentValues.put(REPOSITORY_USER_ID_FIELD, owner?.id)
-        contentValues.put(REPOSITORY_PAGINATION_FIELD, pagination)
-
-        if (cursor.count == 0) {
-            db.insert(REPOSITORY_TABLE_NAME, null, contentValues)
-        } else {
-            db.update(REPOSITORY_TABLE_NAME, contentValues, "$REPOSITORY_ID_FIELD = ?", arrayOf(id.toString()))
-        }
-    }
+    return Repository(id, name, owner, description, stargazersCount, forksCount, language)
 }
+
+
