@@ -49,8 +49,8 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        (activity as MainActivity).supportActionBar!!.title = repository
+        (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        (activity as MainActivity).supportActionBar?.title = repository
     }
 
     override fun onDestroy() {
@@ -65,11 +65,11 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_repository_detail, container, false)
+        val view = inflater?.inflate(R.layout.fragment_repository_detail, container, false)
 
-        repositoryPullsRequestRecicler = view.findViewById(R.id.repository_pulls_request_recyclerview) as RecyclerView
-        progressBar = view.findViewById(R.id.progress) as ProgressBar
-        txtFeedBack = view.findViewById(R.id.txt_feedback) as TextView
+        repositoryPullsRequestRecicler = view?.findViewById(R.id.repository_pulls_request_recyclerview) as RecyclerView
+        progressBar = view?.findViewById(R.id.progress) as ProgressBar
+        txtFeedBack = view?.findViewById(R.id.txt_feedback) as TextView
 
         return view
     }
@@ -83,38 +83,38 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
 
         val layoutManager = LinearLayoutManager(activity)
 
-        repositoryPullsRequestRecicler!!.setHasFixedSize(true)
-        repositoryPullsRequestRecicler!!.layoutManager = layoutManager
+        repositoryPullsRequestRecicler?.setHasFixedSize(true)
+        repositoryPullsRequestRecicler?.layoutManager = layoutManager
 
-        if (pullRequestList == null || pullRequestList!!.size == 0) {
+        if (pullRequestList == null || pullRequestList?.size == 0) {
             if (!creator.isEmpty())
                 presenter?.getPullRequest(loaderManager, creator, repository)
         } else {
             repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(activity, pullRequestList!!)
-            repositoryPullsRequestRecicler!!.adapter = repositoryPullsRequestAdapter
-            txtFeedBack!!.visibility = View.GONE
+            repositoryPullsRequestRecicler?.adapter = repositoryPullsRequestAdapter
+            txtFeedBack?.visibility = View.GONE
         }
     }
 
     override fun showItems(items: MutableList<PullRequest>) {
         pullRequestList = items as ArrayList<PullRequest>
         repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(context, items)
-        repositoryPullsRequestRecicler!!.adapter = repositoryPullsRequestAdapter
+        repositoryPullsRequestRecicler?.adapter = repositoryPullsRequestAdapter
 
         if (items.size == 0) {
-            txtFeedBack!!.setText(R.string.repository_detail_no_pull_request)
-            txtFeedBack!!.visibility = View.VISIBLE
+            txtFeedBack?.setText(R.string.repository_detail_no_pull_request)
+            txtFeedBack?.visibility = View.VISIBLE
         } else {
-            txtFeedBack!!.visibility = View.GONE
+            txtFeedBack?.visibility = View.GONE
         }
     }
 
     override fun showProgress() {
-        progressBar!!.visibility = View.VISIBLE
+        progressBar?.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        progressBar!!.visibility = View.GONE
+        progressBar?.visibility = View.GONE
     }
 
     override fun showError() {
@@ -122,7 +122,7 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
                 R.string.repository_detail_error,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.retry,
-                        { view -> presenter!!.getPullRequest(loaderManager, creator, repository) })
+                        { view -> presenter?.getPullRequest(loaderManager, creator, repository) })
 
         snackbar!!.show()
     }
@@ -134,9 +134,7 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
     }
 
     override fun cleanData() {
-        if (pullRequestList != null) {
-            pullRequestList!!.clear()
-        }
+        pullRequestList?.clear()
     }
 
     companion object {

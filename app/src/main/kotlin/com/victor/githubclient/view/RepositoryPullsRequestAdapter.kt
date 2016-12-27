@@ -32,15 +32,16 @@ class RepositoryPullsRequestAdapter(private val context: Context, private val it
     override fun onBindViewHolder(holder: RepositoryPullsRequestViewHolder, position: Int) {
         val item = items[position]
 
-        holder.txtName!!.text = item.user?.name
-        holder.txtUserName!!.text = item.user?.login
-        holder.txtTitle!!.text = item.title
-        holder.txtBody!!.text = item.body
-        holder.txtDate!!.text = item.createdAtFormated
+        holder.txtName?.text = item.user?.name
+        holder.txtUserName?.text = item.user?.login
+        holder.txtTitle?.text = item.title
+        holder.txtBody?.text = item.body
+        holder.txtDate?.text = item.createdAtFormated
 
-        ImageLoader.loadImage(item.user?.avatarUrl, holder.imgProfile!!, R.drawable.avatar)
+        if (holder.imgProfile != null)
+            ImageLoader.loadImage(item.user?.avatarUrl, holder.imgProfile!!, R.drawable.avatar)
 
-        holder.layoutParent!!.setOnClickListener { view ->
+        holder.layoutParent?.setOnClickListener { view ->
             context.startActivity(
                     Intent(Intent.ACTION_VIEW,
                             Uri.parse(item.htmlUrl)))

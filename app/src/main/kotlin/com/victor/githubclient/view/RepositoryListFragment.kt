@@ -38,8 +38,8 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
 
     override fun onResume() {
         super.onResume()
-        (activity as MainActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        (activity as MainActivity).supportActionBar!!.setTitle(R.string.respository_list_title)
+        (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        (activity as MainActivity).supportActionBar?.setTitle(R.string.respository_list_title)
     }
 
     override fun onDestroy() {
@@ -49,10 +49,10 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater!!.inflate(R.layout.fragment_repository_list, container, false)
+        val view = inflater?.inflate(R.layout.fragment_repository_list, container, false)
 
-        repositoryListRecicler = view.findViewById(R.id.repository_list_recyclerview) as RecyclerView
-        progressBar = view.findViewById(R.id.progress) as ProgressBar
+        repositoryListRecicler = view?.findViewById(R.id.repository_list_recyclerview) as RecyclerView
+        progressBar = view?.findViewById(R.id.progress) as ProgressBar
 
         return view
     }
@@ -63,25 +63,25 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         initRecyclerView()
 
         if (repositoryList == null || repositoryList!!.size == 0) {
-            presenter!!.getRepositories(loaderManager)
+            presenter?.getRepositories(loaderManager)
         } else {
             repositoryListAdapter = RepositoryListAdapter(activity, repositoryList!!)
-            repositoryListRecicler!!.adapter = repositoryListAdapter
+            repositoryListRecicler?.adapter = repositoryListAdapter
         }
     }
 
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(activity)
 
-        repositoryListRecicler!!.setHasFixedSize(true)
-        repositoryListRecicler!!.layoutManager = layoutManager
+        repositoryListRecicler?.setHasFixedSize(true)
+        repositoryListRecicler?.layoutManager = layoutManager
 
-        repositoryListRecicler!!.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        repositoryListRecicler?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager
                         .findLastCompletelyVisibleItemPosition() == layoutManager.itemCount - 1) {
-                    presenter!!.getRepositories(loaderManager)
+                    presenter?.getRepositories(loaderManager)
                 }
             }
         })
@@ -91,26 +91,23 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         if (repositoryListAdapter == null) {
             repositoryList = items
             repositoryListAdapter = RepositoryListAdapter(activity, items)
-            repositoryListRecicler!!.adapter = repositoryListAdapter
+            repositoryListRecicler?.adapter = repositoryListAdapter
         } else {
-            repositoryList!!.addAll(items)
+            repositoryList?.addAll(items)
             repositoryListAdapter!!.notifyDataSetChanged()
         }
     }
 
     override fun cleanData() {
-        if (repositoryList != null) {
-            repositoryList!!.clear()
-        }
+        repositoryList?.clear()
     }
 
     override fun showError() {
-
         snackbar = Snackbar.make(view as View,
                 R.string.repository_list_get_error,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.retry,
-                        { view -> presenter!!.getRepositories(loaderManager) })
+                        { view -> presenter?.getRepositories(loaderManager) })
 
         snackbar!!.show()
     }
@@ -122,10 +119,10 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
     }
 
     override fun showProgress() {
-        progressBar!!.visibility = View.VISIBLE
+        progressBar?.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        progressBar!!.visibility = View.GONE
+        progressBar?.visibility = View.GONE
     }
 }

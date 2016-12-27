@@ -32,20 +32,23 @@ class RepositoryListAdapter(private val activity: Activity, val items: List<Repo
     override fun onBindViewHolder(holder: RepositoryListViewHolder, position: Int) {
         val item = items[position]
 
-        holder.txtName!!.text = item.owner?.name
-        holder.txtUserName!!.text = item.owner?.login
-        holder.txtTitle!!.text = item.name
-        holder.txtDescription!!.text = item.description
-        holder.txtForkCount!!.text = formatCount(item.forksCount!!)
-        holder.txtStarCount!!.text = formatCount(item.stargazersCount!!)
+        holder.txtName?.text = item.owner?.name
+        holder.txtUserName?.text = item.owner?.login
+        holder.txtTitle?.text = item.name
+        holder.txtDescription?.text = item.description
+        holder.txtForkCount?.text = if (item.forksCount != null) formatCount(item.forksCount!!) else ""
+        holder.txtStarCount?.text = if (item.stargazersCount != null) formatCount(item.stargazersCount!!) else ""
 
-        ImageLoader.loadImage(item.owner?.avatarUrl, holder.imgProfile!!, R.drawable.avatar)
+        if (holder.imgProfile != null)
+            ImageLoader.loadImage(item.owner?.avatarUrl, holder.imgProfile!!, R.drawable.avatar)
 
-        holder.layoutParent!!.setOnClickListener { view ->
-            (activity as MainActivity).showDetail(
-                    RepositoryDetailFragment.newInstance(
-                            item.owner!!.login,
-                            item.name))
+        if (item.owner != null) {
+            holder.layoutParent?.setOnClickListener { view ->
+                (activity as MainActivity).showDetail(
+                        RepositoryDetailFragment.newInstance(
+                                item.owner!!.login,
+                                item.name))
+            }
         }
     }
 
