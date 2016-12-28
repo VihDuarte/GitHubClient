@@ -14,9 +14,6 @@ data class PullRequest(var id: Int?,
                        var htmlUrl: String,
                        var order: Int?)
 
-fun getCreatedAtFormated(date: Date?): String{
-    return SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(date)
-}
 
 fun getPullRequestByJson(json: JSONObject): PullRequest {
     var id: Int? = null

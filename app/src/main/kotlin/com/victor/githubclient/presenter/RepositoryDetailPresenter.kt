@@ -3,6 +3,7 @@ package com.victor.githubclient.presenter
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.support.v4.app.LoaderManager
+import com.victor.githubclient.extensions.isOnline
 import com.victor.githubclient.interactor.GitHubData
 import com.victor.githubclient.interactor.getAllPullRequests
 import com.victor.githubclient.interactor.getOffilinePullRequests
@@ -10,7 +11,6 @@ import com.victor.githubclient.loader.Callback
 import com.victor.githubclient.loader.GitHubLoader
 import com.victor.githubclient.loader.GitHubLoaderManager
 import com.victor.githubclient.model.PullRequest
-import com.victor.githubclient.utils.isOnline
 import com.victor.githubclient.view.RepositoryDetailView
 
 
@@ -37,7 +37,7 @@ class RepositoryDetailPresenter() {
 
         view?.showProgress()
 
-        if (firstTime || !isOnline(context!!)) {
+        if (firstTime || !context!!.isOnline()) {
             val loaderOffline = RepositoryDetailLoaderOffline(context!!, creator, repository, githubData!!.readableDatabase)
             GitHubLoaderManager.init(loaderManager, -1, loaderOffline, (object : Callback<MutableList<PullRequest>> {
                 override fun onFailure(ex: Exception) {

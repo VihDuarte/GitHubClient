@@ -4,7 +4,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.victor.githubclient.model.*
+import com.victor.githubclient.extensions.formatToString
+import com.victor.githubclient.model.PullRequest
+import com.victor.githubclient.model.RepositoriesSearchResult
+import com.victor.githubclient.model.Repository
+import com.victor.githubclient.model.User
 
 class GitHubData(context: Context) : SQLiteOpenHelper(context, GitHubData.DB_NAME, null, GitHubData.VERSION) {
     override fun onCreate(db: SQLiteDatabase) {
@@ -84,7 +88,7 @@ fun savePullRequestInDb(db: SQLiteDatabase, pullRequest: PullRequest) {
     contentValues.put(PULL_REQUEST_TITLE_FIELD, pullRequest.title)
     contentValues.put(PULL_REQUEST_BODY_FIELD, pullRequest.body)
     contentValues.put(PULL_REQUEST_HTML_URL_FIELD, pullRequest.htmlUrl)
-    contentValues.put(PULL_REQUEST_CREATED_FIELD, getCreatedAtFormated(pullRequest.createdAt))
+    contentValues.put(PULL_REQUEST_CREATED_FIELD, pullRequest.createdAt?.formatToString())
     contentValues.put(PULL_REQUEST_ORDER_FIELD, pullRequest.order)
     contentValues.put(PULL_REQUEST_USER_ID_FIELD, pullRequest.user?.id)
 

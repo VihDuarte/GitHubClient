@@ -1,7 +1,6 @@
 package com.victor.githubclient.view
 
 import android.app.Activity
-import android.graphics.Bitmap
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,9 +9,9 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.victor.githubclient.R
+import com.victor.githubclient.extensions.formatCount
+import com.victor.githubclient.extensions.loadImage
 import com.victor.githubclient.model.Repository
-import com.victor.githubclient.utils.ImageLoader
-import com.victor.githubclient.utils.formatCount
 
 class RepositoryListAdapter(private val activity: Activity, val items: List<Repository>) : RecyclerView.Adapter<RepositoryListAdapter.RepositoryListViewHolder>() {
 
@@ -36,11 +35,9 @@ class RepositoryListAdapter(private val activity: Activity, val items: List<Repo
         holder.txtUserName?.text = item.owner?.login
         holder.txtTitle?.text = item.name
         holder.txtDescription?.text = item.description
-        holder.txtForkCount?.text = if (item.forksCount != null) formatCount(item.forksCount!!) else ""
-        holder.txtStarCount?.text = if (item.stargazersCount != null) formatCount(item.stargazersCount!!) else ""
-
-        if (holder.imgProfile != null)
-            ImageLoader.loadImage(item.owner?.avatarUrl, holder.imgProfile!!, R.drawable.avatar)
+        holder.txtForkCount?.text = item.forksCount?.formatCount()
+        holder.txtStarCount?.text = item.stargazersCount?.formatCount()
+        holder.imgProfile?.loadImage(item.owner?.avatarUrl, R.drawable.avatar)
 
         if (item.owner != null) {
             holder.layoutParent?.setOnClickListener { view ->

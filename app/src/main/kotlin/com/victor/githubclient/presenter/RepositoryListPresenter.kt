@@ -11,7 +11,7 @@ import com.victor.githubclient.view.RepositoryListView
 import android.support.v4.app.LoaderManager
 import com.victor.githubclient.interactor.GitHubData
 import com.victor.githubclient.interactor.getOfflineRepositories
-import com.victor.githubclient.utils.isOnline
+import com.victor.githubclient.extensions.isOnline
 
 
 /**
@@ -30,7 +30,7 @@ class RepositoryListPresenter {
 
         view?.showProgress()
 
-        if (firstTime || !isOnline(context!!)) {
+        if (firstTime || !context!!.isOnline()) {
             val loaderOffline = RepositoryListLoaderOffline(context!!, currentTimelinePage + 1, githubData!!.readableDatabase)
             GitHubLoaderManager.init(loaderManager, -(currentTimelinePage + 1), loaderOffline, (object : Callback<RepositoriesSearchResult?> {
                 override fun onFailure(ex: Exception) {
@@ -57,7 +57,7 @@ class RepositoryListPresenter {
                 if (result != null) {
                     currentTimelinePage = result.pagination
 
-                    if (firstTime ) {
+                    if (firstTime) {
                         view?.cleanData()
                         firstTime = false
                     }
@@ -65,7 +65,7 @@ class RepositoryListPresenter {
                     view?.showItems(result.repositories)
                     view?.hideError()
                     view?.hideProgress()
-                }else{
+                } else {
                     view?.hideProgress()
                     view?.showError()
                 }
