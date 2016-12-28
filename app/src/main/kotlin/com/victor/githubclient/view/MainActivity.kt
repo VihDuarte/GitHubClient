@@ -7,7 +7,7 @@ import android.view.MenuItem
 import android.widget.FrameLayout
 import com.victor.githubclient.R
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ContainerView {
     internal var mainContainer: FrameLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,9 +21,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         startFragment(RepositoryListFragment())
+        supportActionBar?.setTitle(R.string.respository_list_title)
 
         if (mainContainer == null) {
-            showDetail(RepositoryDetailFragment())
+            showDetail(RepositoryDetailFragment(), "")
         }
     }
 
@@ -34,13 +35,23 @@ class MainActivity : AppCompatActivity() {
                 .commit()
     }
 
-    fun showDetail(fragment: Fragment) {
+    override fun showDetail(fragment: Fragment, title: String) {
         supportFragmentManager
                 .beginTransaction()
                 .replace(if (mainContainer != null) R.id.maincontainer else R.id.repository_detail_container,
                         fragment)
                 .addToBackStack(null)
                 .commitAllowingStateLoss()
+
+        supportActionBar?.title = title
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setTitle(R.string.respository_list_title)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

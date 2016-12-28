@@ -46,6 +46,10 @@ class RepositoryListPresenter {
             }))
         }
 
+        if (firstTime) {
+            currentTimelinePage = 0
+        }
+
         val loader = RepositoryListLoader(context!!, currentTimelinePage + 1, githubData!!.writableDatabase)
         GitHubLoaderManager.init(loaderManager, currentTimelinePage + 1, loader, (object : Callback<RepositoriesSearchResult?> {
             override fun onFailure(ex: Exception) {

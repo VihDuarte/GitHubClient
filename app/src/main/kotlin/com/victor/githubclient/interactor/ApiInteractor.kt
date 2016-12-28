@@ -33,7 +33,8 @@ fun getOfflineRepositories(db: SQLiteDatabase, pagination: Int): RepositoriesSea
             "$REPOSITORY_USER_ID_FIELD, " +
             "$REPOSITORY_ID_FIELD" +
             " FROM $REPOSITORY_TABLE_NAME" +
-            " WHERE $REPOSITORY_PAGINATION_FIELD = $pagination", null)
+            " WHERE $REPOSITORY_PAGINATION_FIELD = $pagination" +
+            " ORDER BY $REPOSITORY_STARGAZERS_FIELD DESC", null)
 
     repositoryCursor.moveToFirst()
 

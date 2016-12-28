@@ -47,12 +47,6 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        (activity as MainActivity).supportActionBar?.title = repository
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         presenter?.detachView()

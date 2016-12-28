@@ -41,10 +41,10 @@ class RepositoryListAdapter(private val activity: Activity, val items: List<Repo
 
         if (item.owner != null) {
             holder.layoutParent?.setOnClickListener { view ->
-                (activity as MainActivity).showDetail(
+                (activity as ContainerView).showDetail(
                         RepositoryDetailFragment.newInstance(
                                 item.owner!!.login,
-                                item.name))
+                                item.name), item.name)
             }
         }
     }

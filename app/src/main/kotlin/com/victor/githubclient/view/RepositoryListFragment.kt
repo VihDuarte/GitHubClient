@@ -36,12 +36,6 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         presenter?.attachView(context, this)
     }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        (activity as MainActivity).supportActionBar?.setTitle(R.string.respository_list_title)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         presenter?.detachView()
