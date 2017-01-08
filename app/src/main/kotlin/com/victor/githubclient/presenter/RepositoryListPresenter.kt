@@ -14,9 +14,6 @@ import com.victor.githubclient.interactor.getOfflineRepositories
 import com.victor.githubclient.extensions.isOnline
 
 
-/**
- * Created by Victor on 25/08/2016.
- */
 class RepositoryListPresenter {
     private var firstTime = true
     private var currentTimelinePage = 0

@@ -2,7 +2,6 @@ package com.victor.githubclient.model
 
 import org.json.JSONObject
 
-
 data class Repository(var id: Int?,
                       var name: String,
                       var owner: User?,

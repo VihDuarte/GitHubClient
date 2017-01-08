@@ -104,11 +104,11 @@ fun saveRepositoryInDb(db: SQLiteDatabase, pagination: Int, repository: Reposito
         saveUserInDb(db, repository.owner!!)
     }
 
-    var repositorytId = repository.id
+    var repositoryId = repository.id
 
     val cursor = db.rawQuery("SELECT $REPOSITORY_ID_FIELD " +
             " FROM $REPOSITORY_TABLE_NAME" +
-            " WHERE $REPOSITORY_ID_FIELD = $repositorytId", null)
+            " WHERE $REPOSITORY_ID_FIELD = $repositoryId", null)
 
     val contentValues: ContentValues = ContentValues()
 

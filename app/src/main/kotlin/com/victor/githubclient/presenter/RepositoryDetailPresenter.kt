@@ -6,13 +6,12 @@ import android.support.v4.app.LoaderManager
 import com.victor.githubclient.extensions.isOnline
 import com.victor.githubclient.interactor.GitHubData
 import com.victor.githubclient.interactor.getAllPullRequests
-import com.victor.githubclient.interactor.getOffilinePullRequests
+import com.victor.githubclient.interactor.getOfflinePullRequests
 import com.victor.githubclient.loader.Callback
 import com.victor.githubclient.loader.GitHubLoader
 import com.victor.githubclient.loader.GitHubLoaderManager
 import com.victor.githubclient.model.PullRequest
 import com.victor.githubclient.view.RepositoryDetailView
-
 
 class RepositoryDetailPresenter() {
     private var firstTime = true
@@ -80,7 +79,7 @@ class RepositoryDetailPresenter() {
 
     class RepositoryDetailLoaderOffline(context: Context, private val creator: String, private val repository: String, private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<MutableList<PullRequest>>(context) {
         override fun call(): MutableList<PullRequest> {
-            return getOffilinePullRequests(db = sqLiteDatabase, creator = creator, repository = repository)
+            return getOfflinePullRequests(db = sqLiteDatabase, creator = creator, repository = repository)
         }
     }
 }

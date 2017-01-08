@@ -98,7 +98,7 @@ fun getAllPullRequests(db: SQLiteDatabase, creator: String, repository: String):
     return result
 }
 
-fun getOffilinePullRequests(db: SQLiteDatabase, creator: String, repository: String): MutableList<PullRequest> {
+fun getOfflinePullRequests(db: SQLiteDatabase, creator: String, repository: String): MutableList<PullRequest> {
     val pullRequestCursor = db.rawQuery("SELECT " +
             "$PULL_REQUEST_CREATOR_FIELD, " +
             "$PULL_REQUEST_REPOSITORY_FIELD, " +

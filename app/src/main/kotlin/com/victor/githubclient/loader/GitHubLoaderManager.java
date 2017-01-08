@@ -8,7 +8,6 @@ public class GitHubLoaderManager {
 
     public static <D> void init(final LoaderManager manager, final int loaderId,
                                    final GitHubLoader<D> loader, final Callback<D> callback) {
-
         manager.initLoader(loaderId, Bundle.EMPTY, new LoaderCallbacks<Response<D>>() {
             @Override
             public android.support.v4.content.Loader<Response<D>> onCreateLoader(int id, Bundle args) {

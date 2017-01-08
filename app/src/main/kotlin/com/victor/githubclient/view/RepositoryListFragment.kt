@@ -13,9 +13,6 @@ import com.victor.githubclient.R
 import com.victor.githubclient.model.Repository
 import com.victor.githubclient.presenter.RepositoryListPresenter
 
-/**
- * A simple [Fragment] subclass.
- */
 class RepositoryListFragment : Fragment(), RepositoryListView {
     private var repositoryListRecicler: RecyclerView? = null
 

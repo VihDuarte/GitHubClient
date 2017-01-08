@@ -3,7 +3,6 @@ package com.victor.githubclient.loader
 import android.content.Context
 import android.support.v4.content.AsyncTaskLoader
 
-
 abstract class GitHubLoader<D>(context: Context) : AsyncTaskLoader<Response<D>>(context) {
 
     private var mCachedResponse: Response<D>? = null

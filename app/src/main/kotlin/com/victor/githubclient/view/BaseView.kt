@@ -1,6 +1,5 @@
 package com.victor.githubclient.view
 
-
 interface BaseView {
 
     fun showProgress()

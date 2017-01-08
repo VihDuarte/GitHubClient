@@ -15,9 +15,6 @@ import com.victor.githubclient.model.PullRequest
 import com.victor.githubclient.presenter.RepositoryDetailPresenter
 import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- */
 class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
 
     internal var creator: String = ""

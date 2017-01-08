@@ -15,7 +15,6 @@ import com.victor.githubclient.extensions.formatToString
 import com.victor.githubclient.extensions.loadImage
 import com.victor.githubclient.model.PullRequest
 
-
 class RepositoryPullsRequestAdapter(private val context: Context, private val items: List<PullRequest>) : RecyclerView.Adapter<RepositoryPullsRequestAdapter.RepositoryPullsRequestViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryPullsRequestViewHolder {

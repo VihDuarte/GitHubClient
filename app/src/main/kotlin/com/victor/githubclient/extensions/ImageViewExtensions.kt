@@ -5,7 +5,6 @@ import com.victor.githubclient.interactor.DownloadImageTask
 import com.victor.githubclient.interactor.ImageLoader
 
 fun ImageView.loadImage(url: String?, placeHolder: Int) {
-
     if (!ImageLoader.downloads.isEmpty()) {
         ImageLoader.downloads.filter { it.imageView.equals(this) }.forEach {
             it.cancel(true)
@@ -23,6 +22,5 @@ fun ImageView.loadImage(url: String?, placeHolder: Int) {
 
         ImageLoader.downloads.add(item)
     }
-
 }
 
