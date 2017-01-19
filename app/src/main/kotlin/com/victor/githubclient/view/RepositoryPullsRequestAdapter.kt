@@ -1,28 +1,24 @@
 package com.victor.githubclient.view
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
 import com.victor.githubclient.R
 import com.victor.githubclient.extensions.formatToString
 import com.victor.githubclient.extensions.loadImage
 import com.victor.githubclient.model.PullRequest
+import kotlinx.android.synthetic.main.pulls_request_row.view.*
 
-class RepositoryPullsRequestAdapter(private val context: Context, private val items: List<PullRequest>) : RecyclerView.Adapter<RepositoryPullsRequestAdapter.RepositoryPullsRequestViewHolder>() {
+class RepositoryPullsRequestAdapter(private val items: List<PullRequest>,
+                                    val itemClick: (PullRequest) -> Unit)
+    : RecyclerView.Adapter<RepositoryPullsRequestAdapter.RepositoryPullsRequestViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryPullsRequestViewHolder {
         val v = LayoutInflater.from(parent.context)
                 .inflate(R.layout.pulls_request_row, parent, false)
 
-        val vh = RepositoryPullsRequestViewHolder(v)
-        return vh
+        return RepositoryPullsRequestViewHolder(v, itemClick)
     }
 
     override fun getItemCount(): Int {
@@ -30,39 +26,25 @@ class RepositoryPullsRequestAdapter(private val context: Context, private val it
     }
 
     override fun onBindViewHolder(holder: RepositoryPullsRequestViewHolder, position: Int) {
-        val item = items[position]
-
-        holder.txtName?.text = item.user?.name
-        holder.txtUserName?.text = item.user?.login
-        holder.txtTitle?.text = item.title
-        holder.txtBody?.text = item.body
-        holder.txtDate?.text = item.createdAt?.formatToString()
-        holder.imgProfile?.loadImage(item.user?.avatarUrl, R.drawable.avatar)
-
-        holder.layoutParent?.setOnClickListener { view ->
-            context.startActivity(
-                    Intent(Intent.ACTION_VIEW,
-                            Uri.parse(item.htmlUrl)))
-        }
+        holder.binItem(items[position])
     }
 
-    class RepositoryPullsRequestViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var txtUserName: TextView? = null
-        var txtName: TextView? = null
-        var imgProfile: ImageView? = null
-        var txtTitle: TextView? = null
-        var txtBody: TextView? = null
-        var txtDate: TextView? = null
-        var layoutParent: RelativeLayout? = null
+    class RepositoryPullsRequestViewHolder(itemView: View,
+                                           val itemClick: (PullRequest) -> Unit)
+        : RecyclerView.ViewHolder(itemView) {
+        fun binItem(item: PullRequest) {
+            with(item) {
+                itemView.txtName?.text = item.user?.name
+                itemView.txtUserName?.text = item.user?.login
+                itemView.txtTitle?.text = item.title
+                itemView.txtBody?.text = item.body
+                itemView.txtDate?.text = item.createdAt?.formatToString()
+                itemView.imgProfile?.loadImage(item.user?.avatarUrl, R.drawable.avatar)
 
-        init {
-            layoutParent = itemView.findViewById(R.id.layout_parent) as RelativeLayout
-            txtDate = itemView.findViewById(R.id.txt_date) as TextView
-            txtBody = itemView.findViewById(R.id.txt_body) as TextView
-            txtTitle = itemView.findViewById(R.id.txt_title) as TextView
-            imgProfile = itemView.findViewById(R.id.img_profile) as ImageView
-            txtName = itemView.findViewById(R.id.txt_name) as TextView
-            txtUserName = itemView.findViewById(R.id.txt_user_name) as TextView
+                itemView.setOnClickListener { view ->
+                    itemClick(item)
+                }
+            }
         }
     }
 }

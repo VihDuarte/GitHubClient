@@ -1,18 +1,18 @@
 package com.victor.githubclient.view
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
-import android.widget.TextView
 import com.victor.githubclient.R
 import com.victor.githubclient.model.PullRequest
 import com.victor.githubclient.presenter.RepositoryDetailPresenter
+import kotlinx.android.synthetic.main.fragment_repository_detail.*
 import java.util.*
 
 class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
@@ -20,9 +20,6 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
     internal var creator: String = ""
     internal var repository: String = ""
 
-    private var repositoryPullsRequestRecicler: RecyclerView? = null
-    private var progressBar: ProgressBar? = null
-    private var txtFeedBack: TextView? = null
     internal var snackbar: Snackbar? = null
 
     private var pullRequestList: MutableList<PullRequest>? = null
@@ -56,13 +53,7 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.fragment_repository_detail, container, false)
-
-        repositoryPullsRequestRecicler = view?.findViewById(R.id.repository_pulls_request_recyclerview) as RecyclerView
-        progressBar = view?.findViewById(R.id.progress) as ProgressBar
-        txtFeedBack = view?.findViewById(R.id.txt_feedback) as TextView
-
-        return view
+        return inflater?.inflate(R.layout.fragment_repository_detail, container, false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -74,38 +65,38 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
 
         val layoutManager = LinearLayoutManager(activity)
 
-        repositoryPullsRequestRecicler?.setHasFixedSize(true)
-        repositoryPullsRequestRecicler?.layoutManager = layoutManager
+        repositoryPullsRequestRecyclerview?.setHasFixedSize(true)
+        repositoryPullsRequestRecyclerview?.layoutManager = layoutManager
 
         if (pullRequestList == null || pullRequestList?.size == 0) {
             if (!creator.isEmpty())
                 presenter?.getPullRequest(loaderManager, creator, repository)
         } else {
-            repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(activity, pullRequestList!!)
-            repositoryPullsRequestRecicler?.adapter = repositoryPullsRequestAdapter
-            txtFeedBack?.visibility = View.GONE
+            repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(pullRequestList!!) { itemClick(it) }
+            repositoryPullsRequestRecyclerview?.adapter = repositoryPullsRequestAdapter
+            txtFeedback?.visibility = View.GONE
         }
     }
 
     override fun showItems(items: MutableList<PullRequest>) {
         pullRequestList = items as ArrayList<PullRequest>
-        repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(context, items)
-        repositoryPullsRequestRecicler?.adapter = repositoryPullsRequestAdapter
+        repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(items) { itemClick(it) }
+        repositoryPullsRequestRecyclerview?.adapter = repositoryPullsRequestAdapter
 
         if (items.size == 0) {
-            txtFeedBack?.setText(R.string.repository_detail_no_pull_request)
-            txtFeedBack?.visibility = View.VISIBLE
+            txtFeedback?.setText(R.string.repository_detail_no_pull_request)
+            txtFeedback?.visibility = View.VISIBLE
         } else {
-            txtFeedBack?.visibility = View.GONE
+            txtFeedback?.visibility = View.GONE
         }
     }
 
     override fun showProgress() {
-        progressBar?.visibility = View.VISIBLE
+        progress?.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        progressBar?.visibility = View.GONE
+        progress?.visibility = View.GONE
     }
 
     override fun showError() {
@@ -140,5 +131,11 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
             fragment.arguments = args
             return fragment
         }
+    }
+
+    private fun itemClick(item: PullRequest) {
+        context.startActivity(
+                Intent(Intent.ACTION_VIEW,
+                        Uri.parse(item.htmlUrl)))
     }
 }

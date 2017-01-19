@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout_parent"
+    android:id="@+id/layoutParent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/activity_vertical_margin">
 
     <TextView
-        android:id="@+id/txt_title"
+        android:id="@+id/txtTitle"
         style="@style/Base.TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,63 +14,59 @@
         android:text="Titulo" />
 
     <TextView
-        android:id="@+id/txt_date"
+        android:id="@+id/txtDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/txt_title"
+        android:layout_below="@id/txtTitle"
         android:maxLines="2"
         android:text="01/01/2001" />
 
-
     <TextView
-        android:id="@+id/txt_body"
+        android:id="@+id/txtBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/txt_date"
+        android:layout_below="@id/txtDate"
         android:layout_marginTop="@dimen/default_margin_top"
         android:maxLines="2"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " />
 
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/txt_body"
+        android:layout_below="@+id/txtBody"
         android:layout_marginBottom="@dimen/default_margin_bottom"
         android:layout_marginTop="@dimen/default_margin_top">
 
         <ImageView
-            android:id="@+id/img_profile"
+            android:id="@+id/imgProfile"
             android:layout_width="@dimen/profile_small_foto"
             android:layout_height="@dimen/profile_small_foto"
             android:src="@drawable/avatar" />
 
 
         <TextView
-            android:id="@+id/txt_user_name"
+            android:id="@+id/txtUserName"
             style="@style/Base.TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_marginLeft="@dimen/default_margin_left"
-            android:layout_toEndOf="@+id/img_profile"
-            android:layout_toRightOf="@+id/img_profile"
+            android:layout_toEndOf="@+id/imgProfile"
+            android:layout_toRightOf="@+id/imgProfile"
             android:maxLines="1"
             android:text="User name" />
 
         <TextView
-            android:id="@+id/txt_name"
+            android:id="@+id/txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_user_name"
+            android:layout_below="@+id/txtUserName"
             android:layout_marginLeft="@dimen/default_margin_left"
-            android:layout_toEndOf="@+id/img_profile"
-            android:layout_toRightOf="@+id/img_profile"
+            android:layout_toEndOf="@+id/imgProfile"
+            android:layout_toRightOf="@+id/imgProfile"
             android:text="Nome sobrenome" />
     </RelativeLayout>
-
 
     <View
         android:layout_width="match_parent"

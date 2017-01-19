@@ -6,52 +6,52 @@
     android:padding="@dimen/activity_vertical_margin">
 
     <TextView
-        android:id="@+id/txt_title"
+        android:id="@+id/txtTitle"
         style="@style/Base.TextAppearance.AppCompat.Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@+id/layout_info_user"
-        android:layout_toStartOf="@+id/layout_info_user"
+        android:layout_toLeftOf="@+id/layoutInfoUser"
+        android:layout_toStartOf="@+id/layoutInfoUser"
         android:maxLines="2"
         android:text="Titulo" />
 
     <TextView
-        android:id="@+id/txt_description"
+        android:id="@+id/txtDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/txt_title"
-        android:layout_toLeftOf="@+id/layout_info_user"
-        android:layout_toStartOf="@+id/layout_info_user"
+        android:layout_below="@id/txtTitle"
+        android:layout_toLeftOf="@+id/layoutInfoUser"
+        android:layout_toStartOf="@+id/layoutInfoUser"
         android:maxLines="2"
         android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " />
 
 
     <TextView
-        android:id="@+id/txt_fork_count"
+        android:id="@+id/txtForkCount"
         style="@style/CountText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txt_description"
+        android:layout_below="@id/txtDescription"
         android:drawableLeft="@drawable/ic_fork"
         android:text="123" />
 
     <TextView
-        android:id="@+id/txt_star_count"
+        android:id="@+id/txtStarCount"
         style="@style/CountText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txt_description"
+        android:layout_below="@id/txtDescription"
         android:layout_marginLeft="@dimen/default_margin_left"
-        android:layout_toEndOf="@+id/txt_fork_count"
-        android:layout_toRightOf="@+id/txt_fork_count"
+        android:layout_toEndOf="@+id/txtForkCount"
+        android:layout_toRightOf="@+id/txtForkCount"
         android:drawableLeft="@drawable/ic_star"
         android:text="123" />
 
 
     <RelativeLayout
-        android:id="@+id/layout_info_user"
+        android:id="@+id/layoutInfoUser"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -59,34 +59,30 @@
         android:layout_marginLeft="@dimen/activity_horizontal_margin">
 
         <ImageView
-            android:id="@+id/img_profile"
+            android:id="@+id/imgProfile"
             android:layout_width="@dimen/profile_foto"
             android:layout_height="@dimen/profile_foto"
             android:layout_centerHorizontal="true"
             android:src="@drawable/avatar" />
 
-
         <TextView
-            android:id="@+id/txt_user_name"
+            android:id="@+id/txtUserName"
             style="@style/Base.TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/img_profile"
+            android:layout_below="@+id/imgProfile"
             android:layout_centerHorizontal="true"
             android:maxLines="1"
             android:text="User name" />
 
         <TextView
-            android:id="@+id/txt_name"
+            android:id="@+id/txtName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/txt_user_name"
+            android:layout_below="@+id/txtUserName"
             android:layout_centerHorizontal="true"
             android:text="Nome sobrenome" />
-
-
     </RelativeLayout>
-
 
     <View
         android:layout_width="match_parent"

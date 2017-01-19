@@ -8,16 +8,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import com.victor.githubclient.R
 import com.victor.githubclient.model.Repository
 import com.victor.githubclient.presenter.RepositoryListPresenter
+import kotlinx.android.synthetic.main.fragment_repository_list.*
 
 class RepositoryListFragment : Fragment(), RepositoryListView {
-    private var repositoryListRecicler: RecyclerView? = null
-
-    private var progressBar: ProgressBar? = null
-
     private var repositoryList: MutableList<Repository>? = null
     private var repositoryListAdapter: RepositoryListAdapter? = null
     private var snackbar: Snackbar? = null
@@ -41,10 +37,6 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater?.inflate(R.layout.fragment_repository_list, container, false)
-
-        repositoryListRecicler = view?.findViewById(R.id.repository_list_recyclerview) as RecyclerView
-        progressBar = view?.findViewById(R.id.progress) as ProgressBar
-
         return view
     }
 
@@ -56,18 +48,18 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         if (repositoryList == null || repositoryList!!.size == 0) {
             presenter?.getRepositories(loaderManager)
         } else {
-            repositoryListAdapter = RepositoryListAdapter(activity, repositoryList!!)
-            repositoryListRecicler?.adapter = repositoryListAdapter
+            repositoryListAdapter = RepositoryListAdapter(repositoryList!!) { itemClick(it) }
+            repositoryListRecyclerview?.adapter = repositoryListAdapter
         }
     }
 
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(activity)
 
-        repositoryListRecicler?.setHasFixedSize(true)
-        repositoryListRecicler?.layoutManager = layoutManager
+        repositoryListRecyclerview?.setHasFixedSize(true)
+        repositoryListRecyclerview?.layoutManager = layoutManager
 
-        repositoryListRecicler?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        repositoryListRecyclerview?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager
@@ -81,8 +73,8 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
     override fun showItems(items: MutableList<Repository>) {
         if (repositoryListAdapter == null) {
             repositoryList = items
-            repositoryListAdapter = RepositoryListAdapter(activity, items)
-            repositoryListRecicler?.adapter = repositoryListAdapter
+            repositoryListAdapter = RepositoryListAdapter(items) { itemClick(it) }
+            repositoryListRecyclerview?.adapter = repositoryListAdapter
         } else {
             repositoryList?.addAll(items)
             repositoryListAdapter!!.notifyDataSetChanged()
@@ -110,10 +102,17 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
     }
 
     override fun showProgress() {
-        progressBar?.visibility = View.VISIBLE
+        progress?.visibility = View.VISIBLE
     }
 
     override fun hideProgress() {
-        progressBar?.visibility = View.GONE
+        progress?.visibility = View.GONE
+    }
+
+    private fun itemClick(repository: Repository) {
+        (activity as ContainerView).showDetail(
+                RepositoryDetailFragment.newInstance(
+                        repository.owner!!.login,
+                        repository.name), repository.name)
     }
 }

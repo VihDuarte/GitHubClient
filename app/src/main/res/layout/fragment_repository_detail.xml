@@ -3,7 +3,7 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/txt_feedback"
+        android:id="@+id/txtFeedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -15,7 +15,7 @@
         android:text="@string/repository_detail_not_selected" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/repository_pulls_request_recyclerview"
+        android:id="@+id/repositoryPullsRequestRecyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/progress"
