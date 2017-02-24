@@ -8,44 +8,88 @@ import com.victor.githubclient.R
 import com.victor.githubclient.extensions.formatCount
 import com.victor.githubclient.extensions.loadImage
 import com.victor.githubclient.model.Repository
+import kotlinx.android.synthetic.main.loader_item_layout.view.*
 import kotlinx.android.synthetic.main.repository_list_row.view.*
 
 class RepositoryListAdapter(val items: List<Repository>,
-                            val itemClick: (Repository) -> Unit) : RecyclerView.Adapter<RepositoryListAdapter.RepositoryListViewHolder>() {
+                            val itemClick: (Repository) -> Unit) : RecyclerView.Adapter<RepositoryListAdapter.RepositoryListViewHolderContract>() {
+    private val VIEW_TYPE_ITEM = 1
+    private val VIEW_TYPE_LOADER = 2
 
     override fun getItemCount(): Int {
-        return items.size
+        if (items == null || items.size == 0) {
+            return 0
+        }
+
+        return items.size + 1
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryListViewHolder {
-        val v = LayoutInflater.from(parent.context)
-                .inflate(R.layout.repository_list_row, parent, false)
-        return RepositoryListViewHolder(v, itemClick)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepositoryListViewHolderContract {
+        if (viewType == VIEW_TYPE_LOADER) {
+            val v = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.loader_item_layout, parent, false)
+
+            return LoaderViewHolder(v)
+        } else if (viewType == VIEW_TYPE_ITEM) {
+            val v = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.repository_list_row, parent, false)
+            return RepositoryListViewHolder(v, itemClick)
+        }
+
+        throw IllegalArgumentException("Invalid ViewType: " + viewType)
     }
 
-    override fun onBindViewHolder(holder: RepositoryListViewHolder, position: Int) {
-        holder.binItem(items[position])
+    override fun onBindViewHolder(holder: RepositoryListViewHolderContract, position: Int) {
+        val type = getItemViewType(position)
+
+        if (type === VIEW_TYPE_LOADER)
+            holder.binItem(null)
+        else if (type == VIEW_TYPE_ITEM) {
+            holder.binItem(items[position])
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (position != 0 && position == itemCount - 1) {
+            return VIEW_TYPE_LOADER
+        } else {
+            return VIEW_TYPE_ITEM
+        }
+    }
+
+    abstract inner class RepositoryListViewHolderContract(itemView: View)
+        : RecyclerView.ViewHolder(itemView) {
+        abstract fun binItem(item: Repository?)
     }
 
     inner class RepositoryListViewHolder(itemView: View,
                                          val itemClick: (Repository) -> Unit)
-        : RecyclerView.ViewHolder(itemView) {
-        fun binItem(item: Repository) {
-            with(item) {
-                itemView.txtName?.text = item.owner?.name
-                itemView.txtUserName?.text = item.owner?.login
-                itemView.txtTitle?.text = item.name
-                itemView.txtDescription?.text = item.description
-                itemView.txtForkCount?.text = item.forksCount?.formatCount()
-                itemView.txtStarCount?.text = item.stargazersCount?.formatCount()
-                itemView.imgProfile?.loadImage(item.owner?.avatarUrl, R.drawable.avatar)
+        : RepositoryListViewHolderContract(itemView) {
+        override fun binItem(item: Repository?) {
+            if (item != null) {
+                with(item) {
+                    itemView.txtName?.text = item.owner?.name
+                    itemView.txtUserName?.text = item.owner?.login
+                    itemView.txtTitle?.text = item.name
+                    itemView.txtDescription?.text = item.description
+                    itemView.txtForkCount?.text = item.forksCount?.formatCount()
+                    itemView.txtStarCount?.text = item.stargazersCount?.formatCount()
+                    itemView.imgProfile?.loadImage(item.owner?.avatarUrl, R.drawable.avatar)
 
-                if (item.owner != null) {
-                    itemView.setOnClickListener {
-                        itemClick(item)
+                    if (item.owner != null) {
+                        itemView.setOnClickListener {
+                            itemClick(item)
+                        }
                     }
                 }
             }
+        }
+    }
+
+    inner class LoaderViewHolder(itemView: View)
+        : RepositoryListViewHolderContract(itemView) {
+        override fun binItem(item: Repository?) {
+            itemView.progress.visibility = View.VISIBLE
         }
     }
 }

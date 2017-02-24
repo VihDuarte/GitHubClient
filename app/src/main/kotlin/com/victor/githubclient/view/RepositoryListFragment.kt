@@ -63,7 +63,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager
-                        .findLastCompletelyVisibleItemPosition() == layoutManager.itemCount - 1) {
+                        .findLastCompletelyVisibleItemPosition() == layoutManager.itemCount - 3 /*we check with -3 because we need take in consideration the loading space*/) {
                     presenter?.getRepositories(loaderManager)
                 }
             }
@@ -99,14 +99,6 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         if (snackbar != null && snackbar!!.isShown) {
             snackbar!!.dismiss()
         }
-    }
-
-    override fun showProgress() {
-        progress?.visibility = View.VISIBLE
-    }
-
-    override fun hideProgress() {
-        progress?.visibility = View.GONE
     }
 
     private fun itemClick(repository: Repository) {
