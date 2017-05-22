@@ -14,19 +14,21 @@ import com.victor.githubclient.presenter.RepositoryListPresenter
 import kotlinx.android.synthetic.main.fragment_repository_list.*
 
 class RepositoryListFragment : Fragment(), RepositoryListView {
-    private var repositoryList: MutableList<Repository> = arrayListOf()
-    private var repositoryListAdapter: RepositoryListAdapter? = null
-    private var snackbar: Snackbar? = null
+    lateinit var repositoryListAdapter: RepositoryListAdapter
+    lateinit var snackbar: Snackbar
+    lateinit var presenter: RepositoryListPresenter
+    var repositoryList: MutableList<Repository> = arrayListOf()
 
-    lateinit private var presenter: RepositoryListPresenter
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater?.inflate(R.layout.fragment_repository_list, container, false)
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         retainInstance = true
 
-        presenter = RepositoryListPresenter()
-        presenter.attachView(context, this)
+        init()
     }
 
     override fun onDestroy() {
@@ -34,32 +36,56 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         presenter.detachView()
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater?.inflate(R.layout.fragment_repository_list, container, false)
-        return view
+    override fun showItems(items: MutableList<Repository>) {
+        repositoryList.addAll(items)
+        repositoryListAdapter.notifyDataSetChanged()
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun cleanData() {
+        repositoryList.clear()
+    }
+
+    override fun showError() {
+        snackbar.show()
+    }
+
+    override fun hideError() {
+        if (snackbar.isShown) {
+            snackbar.dismiss()
+        }
+    }
+
+    fun init() {
+        presenter = RepositoryListPresenter()
+        presenter.attachView(context, this)
+
+        snackbar = createSnackBar()
 
         initRecyclerView()
 
+        repositoryListAdapter = RepositoryListAdapter(repositoryList) { itemClick(it) }
+        repositoryListRecyclerview.adapter = repositoryListAdapter
+
         if (repositoryList.isEmpty()) {
             presenter.getRepositories(loaderManager)
-        } else {
-            repositoryListAdapter = RepositoryListAdapter(repositoryList) { itemClick(it) }
-            repositoryListRecyclerview?.adapter = repositoryListAdapter
         }
+    }
+
+    private fun createSnackBar(): Snackbar {
+        return Snackbar.make(view as View,
+                R.string.repository_list_get_error,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.retry,
+                        { view -> presenter.getRepositories(loaderManager) })
     }
 
     private fun initRecyclerView() {
         val layoutManager = LinearLayoutManager(activity)
 
-        repositoryListRecyclerview?.setHasFixedSize(true)
-        repositoryListRecyclerview?.layoutManager = layoutManager
+        repositoryListRecyclerview.setHasFixedSize(true)
+        repositoryListRecyclerview.layoutManager = layoutManager
 
-        repositoryListRecyclerview?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        repositoryListRecyclerview.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager
@@ -70,41 +96,13 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         })
     }
 
-    override fun showItems(items: MutableList<Repository>) {
-        if (repositoryListAdapter == null) {
-            repositoryList = items
-            repositoryListAdapter = RepositoryListAdapter(items) { itemClick(it) }
-            repositoryListRecyclerview?.adapter = repositoryListAdapter
-        } else {
-            repositoryList.addAll(items)
-            repositoryListAdapter!!.notifyDataSetChanged()
-        }
-    }
-
-    override fun cleanData() {
-        repositoryList.clear()
-    }
-
-    override fun showError() {
-        snackbar = Snackbar.make(view as View,
-                R.string.repository_list_get_error,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.retry,
-                        { view -> presenter.getRepositories(loaderManager) })
-
-        snackbar!!.show()
-    }
-
-    override fun hideError() {
-        if (snackbar != null && snackbar!!.isShown) {
-            snackbar!!.dismiss()
-        }
-    }
-
     private fun itemClick(repository: Repository) {
-        (activity as ContainerView).showDetail(
-                RepositoryDetailFragment.newInstance(
-                        repository.owner!!.login,
-                        repository.name), repository.name)
+        if (repository.owner != null) {
+            val repositoryDetail = RepositoryDetailFragment
+                    .newInstance(repository.owner.login,
+                            repository.name)
+
+            (activity as ContainerView).showDetail(repositoryDetail, repository.name)
+        }
     }
 }
