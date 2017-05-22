@@ -12,7 +12,7 @@ fun getRepositoriesSearchByJson(json: JSONObject): RepositoriesSearchResult {
         getRepositoryByJson(items.getJSONObject(it))
     }
 
-    return RepositoriesSearchResult(0, repositories);
+    return RepositoriesSearchResult(0, repositories)
 }
 
 

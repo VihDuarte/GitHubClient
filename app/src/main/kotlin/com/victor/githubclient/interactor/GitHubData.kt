@@ -72,7 +72,7 @@ fun saveUserInDb(db: SQLiteDatabase, user: User) {
 
 fun savePullRequestInDb(db: SQLiteDatabase, pullRequest: PullRequest) {
     if (pullRequest.user != null)
-        saveUserInDb(db, pullRequest.user!!)
+        saveUserInDb(db, pullRequest.user)
 
     var pullRequestId = pullRequest.id
 

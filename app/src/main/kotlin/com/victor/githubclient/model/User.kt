@@ -2,7 +2,7 @@ package com.victor.githubclient.model
 
 import org.json.JSONObject
 
-data class User(var id: Int?, var login: String, var avatarUrl: String, var name: String)
+data class User(val id: Int?, val login: String, val avatarUrl: String, val name: String)
 
 fun getUserByJson(json: JSONObject): User {
     var id: Int? = null

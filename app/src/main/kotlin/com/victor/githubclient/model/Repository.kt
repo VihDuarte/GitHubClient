@@ -2,13 +2,13 @@ package com.victor.githubclient.model
 
 import org.json.JSONObject
 
-data class Repository(var id: Int?,
-                      var name: String,
-                      var owner: User?,
-                      var description: String,
-                      var stargazersCount: Int?,
-                      var forksCount: Int?,
-                      var language: String)
+data class Repository(val id: Int?,
+                      val name: String,
+                      val owner: User?,
+                      val description: String,
+                      val stargazersCount: Int?,
+                      val forksCount: Int?,
+                      val language: String)
 
 fun getRepositoryByJson(json: JSONObject): Repository {
     var id: Int? = null

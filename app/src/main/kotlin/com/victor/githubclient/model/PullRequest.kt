@@ -4,15 +4,15 @@ import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class PullRequest(var id: Int?,
-                       var creator: String,
-                       var repository: String,
-                       var user: User?,
-                       var title: String,
-                       var body: String,
-                       var createdAt: Date?,
-                       var htmlUrl: String,
-                       var order: Int?)
+data class PullRequest(val id: Int?,
+                       val creator: String,
+                       val repository: String,
+                       val user: User?,
+                       val title: String,
+                       val body: String,
+                       val createdAt: Date?,
+                       val htmlUrl: String,
+                       val order: Int?)
 
 
 fun getPullRequestByJson(json: JSONObject): PullRequest {
