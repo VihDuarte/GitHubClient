@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import com.victor.githubclient.R
 import com.victor.githubclient.model.PullRequest
@@ -17,33 +18,17 @@ import java.util.*
 
 class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
 
-    private var creator: String = ""
-    private var repository: String = ""
+    lateinit var repositoryPullsRequestAdapter: RepositoryPullsRequestAdapter
+    lateinit var presenter: RepositoryDetailPresenter
+    var pullRequestList: MutableList<PullRequest> = arrayListOf()
+    lateinit var snackbar: Snackbar
 
-    private var snackbar: Snackbar? = null
-
-    private var pullRequestList: MutableList<PullRequest> = arrayListOf()
-    private var repositoryPullsRequestAdapter: RepositoryPullsRequestAdapter? = null
-
-    private var presenter: RepositoryDetailPresenter? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        retainInstance = true
-
-        presenter = RepositoryDetailPresenter()
-        presenter?.attachView(context, this)
-
-        if (arguments != null) {
-            creator = arguments.getString(ARG_CREATOR)
-            repository = arguments.getString(ARG_REPOSITORY)
-        }
-    }
+    var repository: String? = null
+    var creator: String? = null
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter?.detachView()
+        presenter.detachView()
     }
 
     override fun onPause() {
@@ -59,19 +44,8 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val layoutManager = LinearLayoutManager(activity)
-
-        repositoryPullsRequestRecyclerview?.setHasFixedSize(true)
-        repositoryPullsRequestRecyclerview?.layoutManager = layoutManager
-
-        if (pullRequestList.isEmpty()) {
-            if (!creator.isEmpty())
-                presenter?.getPullRequest(loaderManager, creator, repository)
-        } else {
-            repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(pullRequestList) { itemClick(it) }
-            repositoryPullsRequestRecyclerview?.adapter = repositoryPullsRequestAdapter
-            txtFeedback?.visibility = View.GONE
-        }
+        retainInstance = true
+        init()
     }
 
     override fun showItems(items: MutableList<PullRequest>) {
@@ -96,23 +70,57 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
     }
 
     override fun showError() {
-        snackbar = Snackbar.make(view as View,
-                R.string.repository_detail_error,
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.retry,
-                        { view -> presenter?.getPullRequest(loaderManager, creator, repository) })
-
-        snackbar!!.show()
+        snackbar.show()
     }
 
     override fun hideError() {
-        if (snackbar != null && snackbar!!.isShown) {
-            snackbar!!.dismiss()
+        if (snackbar.isShown) {
+            snackbar.dismiss()
         }
     }
 
     override fun cleanData() {
         pullRequestList.clear()
+    }
+
+    private fun init() {
+        if (arguments != null) {
+            creator = arguments.getString(ARG_CREATOR)
+            repository = arguments.getString(ARG_REPOSITORY)
+        }
+
+        repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(pullRequestList) { itemClick(it) }
+        repositoryPullsRequestRecyclerview?.adapter = repositoryPullsRequestAdapter
+
+        presenter = RepositoryDetailPresenter()
+        presenter.attachView(context, this)
+
+        initRecyclerView()
+        initSnackBar()
+
+        if (pullRequestList.isEmpty())
+            getPullRequest()
+        else
+            txtFeedback.visibility = GONE
+    }
+
+    private fun initSnackBar() {
+        snackbar = Snackbar.make(view as View,
+                R.string.repository_detail_error,
+                Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.retry,
+                        { view -> getPullRequest() })
+    }
+
+    private fun initRecyclerView() {
+        val layoutManager = LinearLayoutManager(activity)
+        repositoryPullsRequestRecyclerview?.setHasFixedSize(true)
+        repositoryPullsRequestRecyclerview?.layoutManager = layoutManager
+    }
+
+    private fun getPullRequest() {
+        if (creator != null && repository != null)
+            presenter.getPullRequest(loaderManager, creator!!, repository!!)
     }
 
     private fun itemClick(item: PullRequest) {

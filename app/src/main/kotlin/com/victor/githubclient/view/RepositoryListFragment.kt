@@ -59,8 +59,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         presenter = RepositoryListPresenter()
         presenter.attachView(context, this)
 
-        snackbar = createSnackBar()
-
+        initSnackBar()
         initRecyclerView()
 
         repositoryListAdapter = RepositoryListAdapter(repositoryList) { itemClick(it) }
@@ -71,8 +70,8 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         }
     }
 
-    private fun createSnackBar(): Snackbar {
-        return Snackbar.make(view as View,
+    private fun initSnackBar() {
+        snackbar = Snackbar.make(view as View,
                 R.string.repository_list_get_error,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.retry,
