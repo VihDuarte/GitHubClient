@@ -13,11 +13,11 @@ import com.victor.githubclient.loader.GitHubLoaderManager
 import com.victor.githubclient.model.PullRequest
 import com.victor.githubclient.view.RepositoryDetailView
 
-class RepositoryDetailPresenter() {
+class RepositoryDetailPresenter {
     private var firstTime = true
-    private var view: RepositoryDetailView? = null
-    private var githubData: GitHubData? = null
-    private var context: Context? = null
+     private var view: RepositoryDetailView? = null
+    lateinit private var githubData: GitHubData
+    lateinit private var context: Context
 
     fun attachView(context: Context, view: RepositoryDetailView) {
         this.view = view
@@ -27,17 +27,16 @@ class RepositoryDetailPresenter() {
 
     fun detachView() {
         this.view = null
-        githubData?.close()
+        githubData.close()
     }
 
     fun getPullRequest(loaderManager: LoaderManager, creator: String, repository: String) {
-        if (view == null || context == null)
-            throw Exception("attach view to use the presenter")
+        view ?: throw Exception("attach view to use the presenter")
 
         view?.showProgress()
 
-        if (firstTime || !context!!.isOnline()) {
-            val loaderOffline = RepositoryDetailLoaderOffline(context!!, creator, repository, githubData!!.readableDatabase)
+        if (firstTime || !context.isOnline()) {
+            val loaderOffline = RepositoryDetailLoaderOffline(context, creator, repository, githubData.readableDatabase)
             GitHubLoaderManager.init(loaderManager, -1, loaderOffline, (object : Callback<MutableList<PullRequest>> {
                 override fun onFailure(ex: Exception) {
                     //do nothing
@@ -46,11 +45,10 @@ class RepositoryDetailPresenter() {
                 override fun onSuccess(result: MutableList<PullRequest>) {
                     view?.showItems(result)
                 }
-
             }))
         }
 
-        val loader = RepositoryDetailLoader(context!!, creator, repository, githubData!!.readableDatabase)
+        val loader = RepositoryDetailLoader(context, creator, repository, githubData.readableDatabase)
         GitHubLoaderManager.init(loaderManager, 1, loader, (object : Callback<MutableList<PullRequest>> {
             override fun onFailure(ex: Exception) {
                 view?.hideProgress()
@@ -67,17 +65,22 @@ class RepositoryDetailPresenter() {
                 view?.hideError()
                 view?.hideProgress()
             }
-
         }))
     }
 
-    class RepositoryDetailLoader(context: Context, private val creator: String, private val repository: String, private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<MutableList<PullRequest>>(context) {
+    class RepositoryDetailLoader(context: Context,
+                                 private val creator: String,
+                                 private val repository: String,
+                                 private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<MutableList<PullRequest>>(context) {
         override fun call(): MutableList<PullRequest> {
             return getAllPullRequests(db = sqLiteDatabase, creator = creator, repository = repository)
         }
     }
 
-    class RepositoryDetailLoaderOffline(context: Context, private val creator: String, private val repository: String, private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<MutableList<PullRequest>>(context) {
+    class RepositoryDetailLoaderOffline(context: Context,
+                                        private val creator: String,
+                                        private val repository: String,
+                                        private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<MutableList<PullRequest>>(context) {
         override fun call(): MutableList<PullRequest> {
             return getOfflinePullRequests(db = sqLiteDatabase, creator = creator, repository = repository)
         }

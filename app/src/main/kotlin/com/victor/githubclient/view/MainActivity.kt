@@ -23,9 +23,7 @@ class MainActivity : AppCompatActivity(), ContainerView {
         startFragment(RepositoryListFragment())
         supportActionBar?.setTitle(R.string.respository_list_title)
 
-        if (mainContainer == null) {
-            showDetail(RepositoryDetailFragment(), "")
-        }
+        mainContainer ?: showDetail(RepositoryDetailFragment(), "")
     }
 
     fun startFragment(fragment: Fragment) {

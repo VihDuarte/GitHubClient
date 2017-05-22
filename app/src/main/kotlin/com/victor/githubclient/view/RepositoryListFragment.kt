@@ -14,11 +14,11 @@ import com.victor.githubclient.presenter.RepositoryListPresenter
 import kotlinx.android.synthetic.main.fragment_repository_list.*
 
 class RepositoryListFragment : Fragment(), RepositoryListView {
-    private var repositoryList: MutableList<Repository>? = null
+    private var repositoryList: MutableList<Repository> = arrayListOf()
     private var repositoryListAdapter: RepositoryListAdapter? = null
     private var snackbar: Snackbar? = null
 
-    private var presenter: RepositoryListPresenter? = null
+    lateinit private var presenter: RepositoryListPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,12 +26,12 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
         retainInstance = true
 
         presenter = RepositoryListPresenter()
-        presenter?.attachView(context, this)
+        presenter.attachView(context, this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        presenter?.detachView()
+        presenter.detachView()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -45,10 +45,10 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
 
         initRecyclerView()
 
-        if (repositoryList == null || repositoryList!!.size == 0) {
-            presenter?.getRepositories(loaderManager)
+        if (repositoryList.isEmpty()) {
+            presenter.getRepositories(loaderManager)
         } else {
-            repositoryListAdapter = RepositoryListAdapter(repositoryList!!) { itemClick(it) }
+            repositoryListAdapter = RepositoryListAdapter(repositoryList) { itemClick(it) }
             repositoryListRecyclerview?.adapter = repositoryListAdapter
         }
     }
@@ -64,7 +64,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager
                         .findLastCompletelyVisibleItemPosition() == layoutManager.itemCount - 3 /*we check with -3 because we need take in consideration the loading space*/) {
-                    presenter?.getRepositories(loaderManager)
+                    presenter.getRepositories(loaderManager)
                 }
             }
         })
@@ -76,13 +76,13 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
             repositoryListAdapter = RepositoryListAdapter(items) { itemClick(it) }
             repositoryListRecyclerview?.adapter = repositoryListAdapter
         } else {
-            repositoryList?.addAll(items)
+            repositoryList.addAll(items)
             repositoryListAdapter!!.notifyDataSetChanged()
         }
     }
 
     override fun cleanData() {
-        repositoryList?.clear()
+        repositoryList.clear()
     }
 
     override fun showError() {
@@ -90,7 +90,7 @@ class RepositoryListFragment : Fragment(), RepositoryListView {
                 R.string.repository_list_get_error,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.retry,
-                        { view -> presenter?.getRepositories(loaderManager) })
+                        { view -> presenter.getRepositories(loaderManager) })
 
         snackbar!!.show()
     }

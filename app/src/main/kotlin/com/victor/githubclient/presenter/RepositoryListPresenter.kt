@@ -18,16 +18,15 @@ class RepositoryListPresenter {
     private var firstTime = true
     private var currentTimelinePage = 0
     private var view: RepositoryListView? = null
-    private var githubData: GitHubData? = null
-    private var context: Context? = null
+    lateinit var githubData: GitHubData
+    lateinit private var context: Context
 
     fun getRepositories(loaderManager: LoaderManager) {
-        if (view == null || context == null)
-            throw Exception("attach view to use the presenter")
+        view ?: throw Exception("attach view to use the presenter")
 
 
-        if (firstTime || !context!!.isOnline()) {
-            val loaderOffline = RepositoryListLoaderOffline(context!!, currentTimelinePage + 1, githubData!!.readableDatabase)
+        if (firstTime || !context.isOnline()) {
+            val loaderOffline = RepositoryListLoaderOffline(context, currentTimelinePage + 1, githubData.readableDatabase)
             GitHubLoaderManager.init(loaderManager, -(currentTimelinePage + 1), loaderOffline, (object : Callback<RepositoriesSearchResult?> {
                 override fun onFailure(ex: Exception) {
                     //do nothing
@@ -46,7 +45,7 @@ class RepositoryListPresenter {
             currentTimelinePage = 0
         }
 
-        val loader = RepositoryListLoader(context!!, currentTimelinePage + 1, githubData!!.writableDatabase)
+        val loader = RepositoryListLoader(context, currentTimelinePage + 1, githubData.writableDatabase)
         GitHubLoaderManager.init(loaderManager, currentTimelinePage + 1, loader, (object : Callback<RepositoriesSearchResult?> {
             override fun onFailure(ex: Exception) {
                 view?.showError()
@@ -78,16 +77,20 @@ class RepositoryListPresenter {
 
     fun detachView() {
         this.view = null
-        githubData?.close()
+        githubData.close()
     }
 
-    class RepositoryListLoader(context: Context, private val currentPage: Int, private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<RepositoriesSearchResult?>(context) {
+    class RepositoryListLoader(context: Context,
+                               private val currentPage: Int,
+                               private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<RepositoriesSearchResult?>(context) {
         override fun call(): RepositoriesSearchResult? {
             return searchRepositories(pagination = currentPage, db = sqLiteDatabase)
         }
     }
 
-    class RepositoryListLoaderOffline(context: Context, private val currentPage: Int, private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<RepositoriesSearchResult?>(context) {
+    class RepositoryListLoaderOffline(context: Context,
+                                      private val currentPage: Int,
+                                      private val sqLiteDatabase: SQLiteDatabase) : GitHubLoader<RepositoriesSearchResult?>(context) {
         override fun call(): RepositoriesSearchResult? {
             return getOfflineRepositories(pagination = currentPage, db = sqLiteDatabase)
         }

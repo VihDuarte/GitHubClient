@@ -17,12 +17,12 @@ import java.util.*
 
 class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
 
-    internal var creator: String = ""
-    internal var repository: String = ""
+    private var creator: String = ""
+    private var repository: String = ""
 
-    internal var snackbar: Snackbar? = null
+    private var snackbar: Snackbar? = null
 
-    private var pullRequestList: MutableList<PullRequest>? = null
+    private var pullRequestList: MutableList<PullRequest> = arrayListOf()
     private var repositoryPullsRequestAdapter: RepositoryPullsRequestAdapter? = null
 
     private var presenter: RepositoryDetailPresenter? = null
@@ -59,20 +59,16 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (creator == null && repository == null) {
-            return
-        }
-
         val layoutManager = LinearLayoutManager(activity)
 
         repositoryPullsRequestRecyclerview?.setHasFixedSize(true)
         repositoryPullsRequestRecyclerview?.layoutManager = layoutManager
 
-        if (pullRequestList == null || pullRequestList?.size == 0) {
+        if (pullRequestList.isEmpty()) {
             if (!creator.isEmpty())
                 presenter?.getPullRequest(loaderManager, creator, repository)
         } else {
-            repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(pullRequestList!!) { itemClick(it) }
+            repositoryPullsRequestAdapter = RepositoryPullsRequestAdapter(pullRequestList) { itemClick(it) }
             repositoryPullsRequestRecyclerview?.adapter = repositoryPullsRequestAdapter
             txtFeedback?.visibility = View.GONE
         }
@@ -116,7 +112,13 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
     }
 
     override fun cleanData() {
-        pullRequestList?.clear()
+        pullRequestList.clear()
+    }
+
+    private fun itemClick(item: PullRequest) {
+        context.startActivity(
+                Intent(Intent.ACTION_VIEW,
+                        Uri.parse(item.htmlUrl)))
     }
 
     companion object {
@@ -131,11 +133,5 @@ class RepositoryDetailFragment : Fragment(), RepositoryDetailView {
             fragment.arguments = args
             return fragment
         }
-    }
-
-    private fun itemClick(item: PullRequest) {
-        context.startActivity(
-                Intent(Intent.ACTION_VIEW,
-                        Uri.parse(item.htmlUrl)))
     }
 }

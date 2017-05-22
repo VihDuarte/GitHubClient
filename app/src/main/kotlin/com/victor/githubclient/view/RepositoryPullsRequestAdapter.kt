@@ -34,12 +34,15 @@ class RepositoryPullsRequestAdapter(private val items: List<PullRequest>,
         : RecyclerView.ViewHolder(itemView) {
         fun binItem(item: PullRequest) {
             with(item) {
-                itemView.txtName?.text = item.user?.name
-                itemView.txtUserName?.text = item.user?.login
-                itemView.txtTitle?.text = item.title
-                itemView.txtBody?.text = item.body
-                itemView.txtDate?.text = item.createdAt?.formatToString()
-                itemView.imgProfile?.loadImage(item.user?.avatarUrl, R.drawable.avatar)
+                itemView.txtTitle?.text = title
+                itemView.txtBody?.text = body
+                itemView.txtDate?.text = createdAt?.formatToString()
+
+                user?.let {
+                    itemView.txtName?.text = it.name
+                    itemView.txtUserName?.text = it.login
+                    itemView.imgProfile?.loadImage(it.avatarUrl, R.drawable.avatar)
+                }
 
                 itemView.setOnClickListener { view ->
                     itemClick(item)

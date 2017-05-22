@@ -17,7 +17,7 @@ class RepositoryListAdapter(val items: List<Repository>,
     private val VIEW_TYPE_LOADER = 2
 
     override fun getItemCount(): Int {
-        if (items == null || items.size == 0) {
+        if (items.isEmpty()) {
             return 0
         }
 
@@ -42,7 +42,7 @@ class RepositoryListAdapter(val items: List<Repository>,
     override fun onBindViewHolder(holder: RepositoryListViewHolderContract, position: Int) {
         val type = getItemViewType(position)
 
-        if (type === VIEW_TYPE_LOADER)
+        if (type == VIEW_TYPE_LOADER)
             holder.binItem(null)
         else if (type == VIEW_TYPE_ITEM) {
             holder.binItem(items[position])
@@ -66,17 +66,18 @@ class RepositoryListAdapter(val items: List<Repository>,
                                          val itemClick: (Repository) -> Unit)
         : RepositoryListViewHolderContract(itemView) {
         override fun binItem(item: Repository?) {
-            if (item != null) {
-                with(item) {
-                    itemView.txtName?.text = item.owner?.name
-                    itemView.txtUserName?.text = item.owner?.login
-                    itemView.txtTitle?.text = item.name
-                    itemView.txtDescription?.text = item.description
-                    itemView.txtForkCount?.text = item.forksCount?.formatCount()
-                    itemView.txtStarCount?.text = item.stargazersCount?.formatCount()
-                    itemView.imgProfile?.loadImage(item.owner?.avatarUrl, R.drawable.avatar)
+           item?.let {
+                with(it) {
+                    itemView.txtTitle?.text = name
+                    itemView.txtDescription?.text = description
+                    itemView.txtForkCount?.text = forksCount?.formatCount()
+                    itemView.txtStarCount?.text = stargazersCount?.formatCount()
 
-                    if (item.owner != null) {
+                    item.owner?.let {
+                        itemView.txtName?.text = it.name
+                        itemView.txtUserName?.text = it.login
+                        itemView.imgProfile?.loadImage(it.avatarUrl, R.drawable.avatar)
+
                         itemView.setOnClickListener {
                             itemClick(item)
                         }
