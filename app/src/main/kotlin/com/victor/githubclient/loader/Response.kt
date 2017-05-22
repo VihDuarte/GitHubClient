@@ -1,34 +1,17 @@
 package com.victor.githubclient.loader
 
-class Response<T> {
-
-    var exception: Exception? = null
-        private set
-
-    var result: T? = null
-        private set
-
+data class Response<out T>(val exception: Exception?, val result: T?) {
     fun hasError(): Boolean {
-
         return exception != null
     }
 
     companion object {
-
-        fun <T> ok(data: T): Response<T> {
-
-            val response = Response<T>()
-            response.result = data
-
-            return response
+        inline fun <T> ok(data: T): Response<T> {
+            return Response(null, data)
         }
 
-        fun <T> error(ex: Exception): Response<T> {
-
-            val response = Response<T>()
-            response.exception = ex
-
-            return response
+        inline fun <T> error(ex: Exception): Response<T> {
+            return Response<T>(ex, null)
         }
     }
 }

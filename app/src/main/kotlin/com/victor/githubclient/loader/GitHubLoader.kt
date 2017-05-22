@@ -3,40 +3,35 @@ package com.victor.githubclient.loader
 import android.content.Context
 import android.support.v4.content.AsyncTaskLoader
 
-abstract class GitHubLoader<D>(context: Context) : AsyncTaskLoader<Response<D>>(context) {
+abstract class GitHubLoader<T>(context: Context) : AsyncTaskLoader<Response<T>>(context) {
 
-    private var mCachedResponse: Response<D>? = null
+    private var cachedResponse: Response<T>? = null
 
-    override fun loadInBackground(): Response<D>? {
+    override fun loadInBackground(): Response<T>? {
         try {
             val data = call()
-            mCachedResponse = Response.ok(data)
-
+            cachedResponse = Response.ok(data)
         } catch (ex: Exception) {
-            mCachedResponse = Response.error<D>(ex)
+            cachedResponse = Response.error<T>(ex)
         }
 
-        return mCachedResponse
+        return cachedResponse
     }
 
     override fun onStartLoading() {
         super.onStartLoading()
 
-        if (mCachedResponse != null) {
-            deliverResult(mCachedResponse)
-        }
+        cachedResponse?.let { deliverResult(cachedResponse) }
 
-        if (takeContentChanged() || mCachedResponse == null) {
+        if (takeContentChanged() || cachedResponse == null) {
             forceLoad()
         }
     }
 
     override fun onReset() {
-
         super.onReset()
-
-        mCachedResponse = null
+        cachedResponse = null
     }
 
-    abstract fun call(): D
+    abstract fun call(): T
 }
