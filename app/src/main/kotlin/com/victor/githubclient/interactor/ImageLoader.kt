@@ -18,20 +18,15 @@ class DownloadImageTask(var imageView: ImageView) : AsyncTask<String, Void, Bitm
     private var url = ""
 
     override fun doInBackground(vararg urls: String): Bitmap? {
-        try {
-            url = urls[0]
+        url = urls[0]
 
-            val openStream = java.net.URL(url).openStream()
-            val icon = BitmapFactory.decodeStream(openStream)
-
-            return icon
-        } catch (ex: Exception) {
-            return null
+        java.net.URL(url).openStream().use {
+            return BitmapFactory.decodeStream(it)
         }
     }
 
     override fun onPostExecute(result: Bitmap?) {
-        if (result != null) {
+        result?.let {
             imageView.setImageBitmap(result)
             ImageLoader.addCache(url, result)
         }
