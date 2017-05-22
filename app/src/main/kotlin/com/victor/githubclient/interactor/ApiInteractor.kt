@@ -31,8 +31,7 @@ fun getOfflineRepositories(db: SQLiteDatabase, pagination: Int): RepositoriesSea
             "$REPOSITORY_FORKS_FIELD, " +
             "$REPOSITORY_LANGUAGE_FIELD, " +
             "$REPOSITORY_USER_ID_FIELD, " +
-            "$REPOSITORY_ID_FIELD" +
-            " FROM $REPOSITORY_TABLE_NAME" +
+            "$REPOSITORY_ID_FIELD FROM $REPOSITORY_TABLE_NAME" +
             " WHERE $REPOSITORY_PAGINATION_FIELD = $pagination" +
             " ORDER BY $REPOSITORY_STARGAZERS_FIELD DESC", null)
 
@@ -46,13 +45,12 @@ fun getOfflineRepositories(db: SQLiteDatabase, pagination: Int): RepositoriesSea
                 "$USER_LOGIN_FIELD," +
                 "$USER_AVATAR_FIELD," +
                 "$USER_NAME_FIELD," +
-                "$USER_ID_FIELD" +
-                " FROM $USER_TABLE_NAME" +
+                "$USER_ID_FIELD FROM $USER_TABLE_NAME" +
                 " WHERE $USER_ID_FIELD = $userId", null)
 
         userCursor.moveToFirst()
 
-        var user = User(userCursor.getInt(3),
+        val user = User(userCursor.getInt(3),
                 userCursor.getString(0),
                 userCursor.getString(1),
                 userCursor.getString(2))
@@ -71,7 +69,6 @@ fun getOfflineRepositories(db: SQLiteDatabase, pagination: Int): RepositoriesSea
     }
 
     val result: RepositoriesSearchResult = RepositoriesSearchResult(pagination, repositories)
-
     return result
 }
 
@@ -83,8 +80,8 @@ fun getAllPullRequests(db: SQLiteDatabase, creator: String, repository: String):
 
     val result: MutableList<PullRequest> = arrayListOf()
 
-    loop@ for (i in 0..allPullRequest.length() - 1) {
-        var jsonObject = allPullRequest.getJSONObject(i)
+    for (i in 0..allPullRequest.length() - 1) {
+        val jsonObject = allPullRequest.getJSONObject(i)
         jsonObject.put("creator", creator)
         jsonObject.put("repository", repository)
         jsonObject.put("order", i)
@@ -108,8 +105,7 @@ fun getOfflinePullRequests(db: SQLiteDatabase, creator: String, repository: Stri
             "$PULL_REQUEST_HTML_URL_FIELD," +
             "$PULL_REQUEST_USER_ID_FIELD," +
             "$PULL_REQUEST_ORDER_FIELD," +
-            "$PULL_REQUEST_ID_FIELD" +
-            " FROM $PULL_REQUEST_TABLE_NAME" +
+            "$PULL_REQUEST_ID_FIELD FROM $PULL_REQUEST_TABLE_NAME" +
             " WHERE $PULL_REQUEST_CREATOR_FIELD = '$creator'" +
             " AND $PULL_REQUEST_REPOSITORY_FIELD = '$repository'" +
             " ORDER BY $PULL_REQUEST_ORDER_FIELD ASC", null)
@@ -117,7 +113,7 @@ fun getOfflinePullRequests(db: SQLiteDatabase, creator: String, repository: Stri
     pullRequestCursor.moveToFirst()
 
     val result: MutableList<PullRequest> = arrayListOf()
-    loop@ for (i in 0..pullRequestCursor.count - 1) {
+    for (i in 0..pullRequestCursor.count - 1) {
 
         val userId = pullRequestCursor.getInt(6)
 
@@ -125,18 +121,17 @@ fun getOfflinePullRequests(db: SQLiteDatabase, creator: String, repository: Stri
                 "$USER_LOGIN_FIELD," +
                 "$USER_AVATAR_FIELD," +
                 "$USER_NAME_FIELD," +
-                "$USER_ID_FIELD" +
-                " FROM $USER_TABLE_NAME" +
+                "$USER_ID_FIELD FROM $USER_TABLE_NAME" +
                 " WHERE $USER_ID_FIELD = $userId", null)
 
         userCursor.moveToFirst()
 
-        var user = User(userCursor.getInt(3),
+        val user = User(userCursor.getInt(3),
                 userCursor.getString(0),
                 userCursor.getString(1),
                 userCursor.getString(2))
 
-        var item = PullRequest(pullRequestCursor.getInt(8),
+        val item = PullRequest(pullRequestCursor.getInt(8),
                 pullRequestCursor.getString(0),
                 pullRequestCursor.getString(1),
                 user,

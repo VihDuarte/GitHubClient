@@ -14,14 +14,18 @@ object ImageLoader {
     }
 }
 
-class DownloadImageTask(var imageView: ImageView) : AsyncTask<String, Void, Bitmap>() {
+class DownloadImageTask(val imageView: ImageView) : AsyncTask<String, Void, Bitmap>() {
     private var url = ""
 
     override fun doInBackground(vararg urls: String): Bitmap? {
         url = urls[0]
 
-        java.net.URL(url).openStream().use {
-            return BitmapFactory.decodeStream(it)
+        try {
+            java.net.URL(url).openStream().use {
+                return BitmapFactory.decodeStream(it)
+            }
+        } catch (exception: Exception) {
+            return null
         }
     }
 

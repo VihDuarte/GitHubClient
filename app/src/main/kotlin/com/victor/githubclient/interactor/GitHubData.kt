@@ -50,7 +50,7 @@ class GitHubData(context: Context) : SQLiteOpenHelper(context, GitHubData.DB_NAM
 }
 
 fun saveUserInDb(db: SQLiteDatabase, user: User) {
-    var userId = user.id
+    val userId = user.id
 
     val cursor = db.rawQuery("SELECT $USER_ID_FIELD " +
             " FROM $USER_TABLE_NAME" +
@@ -74,7 +74,7 @@ fun savePullRequestInDb(db: SQLiteDatabase, pullRequest: PullRequest) {
     if (pullRequest.user != null)
         saveUserInDb(db, pullRequest.user)
 
-    var pullRequestId = pullRequest.id
+    val pullRequestId = pullRequest.id
 
     val cursor = db.rawQuery("SELECT $PULL_REQUEST_ID_FIELD " +
             " FROM $PULL_REQUEST_TABLE_NAME" +
@@ -100,11 +100,11 @@ fun savePullRequestInDb(db: SQLiteDatabase, pullRequest: PullRequest) {
 }
 
 fun saveRepositoryInDb(db: SQLiteDatabase, pagination: Int, repository: Repository) {
-    if (repository.owner != null) {
-        saveUserInDb(db, repository.owner!!)
+    repository.owner?.let {
+        saveUserInDb(db, it)
     }
 
-    var repositoryId = repository.id
+    val repositoryId = repository.id
 
     val cursor = db.rawQuery("SELECT $REPOSITORY_ID_FIELD " +
             " FROM $REPOSITORY_TABLE_NAME" +
